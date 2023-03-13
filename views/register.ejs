@@ -1,6 +1,17 @@
 <%- include('./includes/header.ejs') %>
 <div class="container">
-  <form action="/admin/login" method="post">
+  <form action="/admin/register" method="post">
+    <div class="mb-3">
+      <label for="exampleInputName1" class="form-label">Full Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="exampleInputName1"
+        name="name"
+        placeholder="Full Name"
+        required
+      />
+    </div>
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">Email address</label>
       <input
@@ -24,12 +35,25 @@
         required
       />
     </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword2" class="form-label"
+        >Confirm Password</label
+      >
+      <input
+        type="password"
+        class="form-control"
+        id="exampleInputPassword2"
+        name="confirmPassword"
+        placeholder="Confirm Password"
+        required
+      />
+    </div>
     <div class="mb-3 form-check">
       <input type="checkbox" class="form-check-input" id="exampleCheck1" />
       <label class="form-check-label" for="exampleCheck1">Check me out</label>
     </div>
     <div class="mb-3">
-      <a href="./Register" class="text-decoration-none">Register</a>
+      <a href="./login" class="text-decoration-none">I Have Account</a>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>

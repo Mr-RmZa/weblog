@@ -21,12 +21,16 @@ app.use(morgan("dev"));
 // views
 app.set("view engine", "ejs");
 
+// bodyPaser
+app.use(express.urlencoded({ extended: false }));
+
 // static folder
 app.use(express.static(path.join(__dirname, "public")));
-
+ 
 // routes
 app.use("/admin", routerAdmin);
-app.use("/admin/login", routerAdmin);
-app.use(router);
+app.use("/", router);
 
-app.listen(process.env.PORT, () => log.green(`start server port : ${process.env.PORT}`));
+app.listen(process.env.PORT, () =>
+  log.green(`start server port : ${process.env.PORT}`)
+);

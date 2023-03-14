@@ -1,9 +1,11 @@
-import mongoose, { now } from "mongoose";
+import mongoose from "mongoose";
+import { object, ref, string } from "yup";
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   fullname: {
     type: String,
     require: true,
+    trim: true,
   },
   email: {
     type: String,
@@ -22,4 +24,19 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-export const User = mongoose.model("User", UserSchema);
+export const schema = object().shape({
+  name: string()
+    .required("full lname is required")
+    .min(4, "full name minimum 4 character")
+    .max(255, "full name maximum 255 character"),
+  email: string().email("please enter email").required("email is required"),
+  password: string()
+    .required("password is required")
+    .min(4, "password minimum 4 character")
+    .max(255, "password maximum 255 character"),
+  confirmPassword: string()
+    .required("confirm password is required")
+    .oneOf([ref("password")], "password does not match"),
+});
+
+export const User = mongoose.model("User", userSchema);

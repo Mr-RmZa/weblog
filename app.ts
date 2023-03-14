@@ -11,7 +11,7 @@ import { routerAdmin } from "./routes/admin";
 dotenv.config({ path: "./config/config.env" });
 
 // database
-connect.mongodb();
+// connect.mongodb();
 
 const app = express();
 

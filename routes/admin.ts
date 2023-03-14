@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { schema } from "../models/User";
+import { schema, userController } from "../controllers/userController";
 
 export const routerAdmin = Router();
 
@@ -7,23 +7,8 @@ routerAdmin.get("/", (req, res) => {
   res.render("admin", { pageTitle: "Dashboard" });
 });
 
-routerAdmin.get("/login", (req, res) => {
-  res.render("login", { pageTitle: "Login" });
-});
+routerAdmin.get("/login", userController.login);
 
-routerAdmin.get("/register", (req, res) => {
-  res.render("register", { pageTitle: "Register" });
-});
+routerAdmin.get("/register", userController.register);
 
-routerAdmin.post("/register", (req, res) => {
-  schema
-    .validate(req.body, { abortEarly: false })
-    .then((result) => {
-      console.log(result);
-      res.redirect("/admin/login");
-    })
-    .catch((err) => {
-      console.log(err.errors);
-      res.render("register", { pageTitle: "register", errors: err.errors });
-    });
-});
+routerAdmin.post("/register", userController.registerPost);

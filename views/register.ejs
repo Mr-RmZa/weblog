@@ -1,5 +1,6 @@
-<%- include('./includes/header.ejs') %>
+<%- include('./includes/header') %>
 <div class="container">
+  <%- include('./includes/massage') %>
   <form action="/admin/register" method="post">
     <div class="mb-3">
       <label for="exampleInputName1" class="form-label">Full Name</label>
@@ -58,4 +59,4 @@
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
-<%- include('./includes/footer.ejs') %>
+<%- include('./includes/footer') %>

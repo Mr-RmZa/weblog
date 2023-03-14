@@ -26,10 +26,13 @@ app.use(express.urlencoded({ extended: false }));
 
 // static folder
 app.use(express.static(path.join(__dirname, "public")));
- 
+
 // routes
 app.use("/admin", routerAdmin);
 app.use("/", router);
+app.use((req, res) => {
+  res.render("404", { pageTitle: "404 | not found" });
+});
 
 app.listen(process.env.PORT, () =>
   log.green(`start server port : ${process.env.PORT}`)

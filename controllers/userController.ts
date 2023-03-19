@@ -1,12 +1,21 @@
 import { object, ref, string } from "yup";
 import { User } from "../models/User";
+import bcrypt from "bcryptjs";
 
 export class userController {
   public static login(
     req: any,
-    res: { render: (arg0: string, arg1: { pageTitle: string }) => void }
+    res: {
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; message: string }
+      ) => void;
+    }
   ) {
-    res.render("login", { pageTitle: "Login" });
+    res.render("login", {
+      pageTitle: "Login",
+      message: req.flash("success_msg"),
+    });
   }
 
   public static register(
@@ -16,24 +25,29 @@ export class userController {
     res.render("register", { pageTitle: "Register" });
   }
 
-  public static async registerPost(
-    req: { body: any },
+  public static async createUser(
+    req: {
+      flash(arg0: string, arg1: string): unknown;
+      body: any;
+    },
     res: {
       redirect: (arg0: string) => void;
       render: (arg0: string, arg1: { pageTitle: string; errors?: any }) => void;
     }
   ) {
     const errors = [];
+
     try {
       const { fullname, email, password } = req.body;
       const user = await User.findOne({ email });
       if (user) {
-        errors.push( "Duplicate email" );
+        errors.push("Duplicate email");
         return res.render("register", {
           pageTitle: "Register",
           errors,
         });
       }
+
       schema
         .validate(req.body, { abortEarly: false })
         .then((result: any) => {
@@ -44,10 +58,17 @@ export class userController {
           console.log(err.errors);
           res.render("register", { pageTitle: "register", errors: err.errors });
         });
-      await User.create(req.body);
-    } catch (error) {
-      console.log(error);
 
+      bcrypt.hash(password, 10).then(async (res) => {
+        await User.create({
+          fullname,
+          email,
+          password: res,
+        });
+      });
+      req.flash("success_msg", "register successfully!");
+      res.redirect("/admin/login");
+    } catch (error) {
       return res.render("/register", {
         pageTitle: "register",
       });

@@ -11,4 +11,4 @@ routerAdmin.get("/login", userController.login);
 
 routerAdmin.get("/register", userController.register);
 
-routerAdmin.post("/register", userController.registerPost);
+routerAdmin.post("/register", userController.createUser);

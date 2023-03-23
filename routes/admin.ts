@@ -1,13 +1,16 @@
 import { Router } from "express";
-import { schema, userController } from "../controllers/userController";
+import { userController } from "../controllers/userController";
+import { auth } from "../middlewares/auth";
 
 export const routerAdmin = Router();
 
-routerAdmin.get("/", (req, res) => {
+routerAdmin.get("/", auth.authenticated, (req, res) => {
   res.render("admin", { pageTitle: "Dashboard" });
 });
 
 routerAdmin.get("/login", userController.login);
+
+routerAdmin.post("/login", userController.handleLogin);
 
 routerAdmin.get("/register", userController.register);
 

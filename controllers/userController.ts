@@ -1,6 +1,7 @@
 import { object, ref, string } from "yup";
 import { User } from "../models/User";
 import bcrypt from "bcryptjs";
+import passport from "passport";
 
 export class userController {
   public static login(
@@ -8,13 +9,14 @@ export class userController {
     res: {
       render: (
         arg0: string,
-        arg1: { pageTitle: string; message: string }
+        arg1: { pageTitle: string; message: string; error: string }
       ) => void;
     }
   ) {
     res.render("login", {
       pageTitle: "Login",
       message: req.flash("success_msg"),
+      error: req.flash("error"),
     });
   }
 
@@ -23,6 +25,14 @@ export class userController {
     res: { render: (arg0: string, arg1: { pageTitle: string }) => void }
   ) {
     res.render("register", { pageTitle: "Register" });
+  }
+
+  public static handleLogin(req: any, res: any, next: any) {
+    passport.authenticate("local", {
+      successRedirect: "/admin",
+      failureRedirect: "admin/login",
+      failureFlash: true,
+    })(req, res, next);
   }
 
   public static async createUser(

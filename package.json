@@ -2,7 +2,7 @@
   "name": "weblog",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --loader ts-node/esm --inspect ./app.ts",
@@ -23,6 +23,7 @@
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "path": "^0.12.7",
     "ts-node": "^10.9.1",
     "yup": "^1.0.2"
   },

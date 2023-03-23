@@ -8,12 +8,13 @@ import * as dotenv from "dotenv";
 import { routerAdmin } from "./routes/admin";
 import session from "express-session";
 import flash from "connect-flash";
+import passport from "passport";
 
 // env
 dotenv.config({ path: "./config/config.env" });
 
 // database
-connect.mongodb();
+// connect.mongodb();
 
 const app = express();
 
@@ -35,6 +36,10 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+// passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // flash
 app.use(flash());

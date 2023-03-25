@@ -22,15 +22,12 @@ passport.use(
   })
 );
 
-passport.serializeUser((user, done) => {
-  done(null, user);
+passport.serializeUser(function (user: any, done) {
+  done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  User.findById(
-    id,
-    (err: any, user: boolean | Express.User | null | undefined) => {
-      done(err, user);
-    }
-  );
+passport.deserializeUser(function (id, done) {
+  User.findById(id, function (err: any, user: boolean | Express.User | null | undefined) {
+    done(err, user);
+  });
 });

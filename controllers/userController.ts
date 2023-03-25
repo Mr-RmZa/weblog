@@ -30,7 +30,7 @@ export class userController {
   public static handleLogin(req: any, res: any, next: any) {
     passport.authenticate("local", {
       successRedirect: "/admin",
-      failureRedirect: "admin/login",
+      failureRedirect: "/admin/login",
       failureFlash: true,
     })(req, res, next);
   }
@@ -45,6 +45,19 @@ export class userController {
       render: (arg0: string, arg1: { pageTitle: string; errors?: any }) => void;
     }
   ) {
+    schema
+      .validate(req.body, { abortEarly: false })
+      .then((result: any) => {
+        console.log(result);
+      })
+      .catch((err: { errors: any }) => {
+        console.log(err.errors);
+        return res.render("register", {
+          pageTitle: "register",
+          errors: err.errors,
+        });
+      });
+
     const errors = [];
 
     try {
@@ -57,17 +70,6 @@ export class userController {
           errors,
         });
       }
-
-      schema
-        .validate(req.body, { abortEarly: false })
-        .then((result: any) => {
-          console.log(result);
-          res.redirect("/admin/login");
-        })
-        .catch((err: { errors: any }) => {
-          console.log(err.errors);
-          res.render("register", { pageTitle: "register", errors: err.errors });
-        });
 
       bcrypt.hash(password, 10).then(async (res) => {
         await User.create({

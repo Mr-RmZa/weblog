@@ -1,7 +1,7 @@
-import { object, ref, string } from "yup";
 import { User } from "../models/User";
 import bcrypt from "bcryptjs";
 import passport from "passport";
+import { schema } from "../models/secure/userValidation";
 
 export class userController {
   public static login(
@@ -33,6 +33,15 @@ export class userController {
       failureRedirect: "/admin/login",
       failureFlash: true,
     })(req, res, next);
+  }
+
+  public static logout(
+    req: { session: { destroy: (arg0: (err: any) => void) => void } },
+    res: { redirect: (arg0: string) => void }
+  ) {
+    req.session.destroy(function (err: any) {
+      res.redirect("/");
+    });
   }
 
   public static async createUser(
@@ -78,7 +87,9 @@ export class userController {
           password: res,
         });
       });
+
       req.flash("success_msg", "register successfully!");
+
       res.redirect("/admin/login");
     } catch (error) {
       return res.render("/register", {
@@ -87,18 +98,3 @@ export class userController {
     }
   }
 }
-
-export const schema = object().shape({
-  fullname: string()
-    .required("full lname is required")
-    .min(4, "full name minimum 4 character")
-    .max(255, "full name maximum 255 character"),
-  email: string().email("please enter email").required("email is required"),
-  password: string()
-    .required("password is required")
-    .min(4, "password minimum 4 character")
-    .max(255, "password maximum 255 character"),
-  confirmPassword: string()
-    .required("confirm password is required")
-    .oneOf([ref("password")], "password does not match"),
-});

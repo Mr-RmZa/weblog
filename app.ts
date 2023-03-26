@@ -16,7 +16,7 @@ dotenv.config({ path: "./config/config.env" });
 // database
 connect.mongodb();
 
-//* Passport Configuration
+// passport configuration
 import "./config/passport";
 
 const app = express();

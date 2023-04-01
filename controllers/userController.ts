@@ -29,10 +29,25 @@ export class userController {
 
   public static handleLogin(req: any, res: any, next: any) {
     passport.authenticate("local", {
-      successRedirect: "/admin",
+      // successRedirect: "/admin",
       failureRedirect: "/admin/login",
       failureFlash: true,
     })(req, res, next);
+  }
+
+  public static rememberMe(
+    req: {
+      body: { remember: any };
+      session: { cookie: { originalMaxAge: number; expires: null } };
+    },
+    res: any
+  ) {
+    if (req.body.remember) {
+      req.session.cookie.originalMaxAge = 20 * 60 * 60 * 1000; // 1 day or 24 hour
+    } else {
+      req.session.cookie.expires = null;
+    }
+    res.redirect("/admin");
   }
 
   public static logout(
@@ -54,19 +69,6 @@ export class userController {
       render: (arg0: string, arg1: { pageTitle: string; errors?: any }) => void;
     }
   ) {
-    schema
-      .validate(req.body, { abortEarly: false })
-      .then((result: any) => {
-        console.log(result);
-      })
-      .catch((err: { errors: any }) => {
-        console.log(err.errors);
-        return res.render("register", {
-          pageTitle: "register",
-          errors: err.errors,
-        });
-      });
-
     const errors = [];
 
     try {
@@ -79,18 +81,28 @@ export class userController {
           errors,
         });
       }
+      schema
+        .validate(req.body, { abortEarly: false })
+        .then((result: any) => {
+          bcrypt.hash(password, 10).then(async (res) => {
+            await User.create({
+              fullname,
+              email,
+              password: res,
+            });
+          });
 
-      bcrypt.hash(password, 10).then(async (res) => {
-        await User.create({
-          fullname,
-          email,
-          password: res,
+          req.flash("success_msg", "register successfully!");
+
+          res.redirect("/admin/login");
+        })
+        .catch((err: { errors: any }) => {
+          console.log(err.errors);
+          return res.render("register", {
+            pageTitle: "register",
+            errors: err.errors,
+          });
         });
-      });
-
-      req.flash("success_msg", "register successfully!");
-
-      res.redirect("/admin/login");
     } catch (error) {
       return res.render("/register", {
         pageTitle: "register",

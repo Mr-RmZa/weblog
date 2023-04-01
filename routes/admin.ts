@@ -10,7 +10,7 @@ routerAdmin.get("/", auth.authenticated, (req, res) => {
 
 routerAdmin.get("/login", userController.login);
 
-routerAdmin.post("/login", userController.handleLogin);
+routerAdmin.post("/login", userController.handleLogin, userController.rememberMe);
 
 routerAdmin.get("/logout", auth.authenticated, userController.logout);
 

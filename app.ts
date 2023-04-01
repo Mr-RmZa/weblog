@@ -9,6 +9,7 @@ import { routerAdmin } from "./routes/admin";
 import session from "express-session";
 import flash from "connect-flash";
 import passport from "passport";
+import MongoStore from 'connect-mongo'
 
 // env
 dotenv.config({ path: "./config/config.env" });
@@ -33,8 +34,8 @@ app.use(express.urlencoded({ extended: false }));
 // session
 app.use(
   session({
-    secret: "secret",
-    cookie: { maxAge: 60000 },
+    secret: "foo",
+    store: MongoStore.create({ mongoUrl: 'mongodb://localhost/test' }),
     resave: false,
     saveUninitialized: false,
   })

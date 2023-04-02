@@ -9,7 +9,8 @@ import { routerAdmin } from "./routes/admin";
 import session from "express-session";
 import flash from "connect-flash";
 import passport from "passport";
-import MongoStore from 'connect-mongo'
+import MongoStore from "connect-mongo";
+import { morganStream } from "./config/winston";
 
 // env
 dotenv.config({ path: "./config/config.env" });
@@ -23,7 +24,7 @@ import "./config/passport";
 const app = express();
 
 // show requests
-app.use(morgan("dev"));
+app.use(morgan("combined", { stream: morganStream }));
 
 // views
 app.set("view engine", "ejs");
@@ -35,7 +36,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(
   session({
     secret: "foo",
-    store: MongoStore.create({ mongoUrl: 'mongodb://localhost/test' }),
+    store: MongoStore.create({ mongoUrl: "mongodb://localhost/test" }),
     resave: false,
     saveUninitialized: false,
   })

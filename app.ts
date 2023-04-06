@@ -29,8 +29,9 @@ app.use(morgan("combined", { stream: morganStream }));
 // views
 app.set("view engine", "ejs");
 
-// bodyPaser
-app.use(express.urlencoded({ extended: false }));
+//Parse data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // session
 app.use(

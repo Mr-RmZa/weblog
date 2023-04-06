@@ -26,15 +26,27 @@
       />
     </div>
     <div class="mb-3 form-check">
-      <input name="remember" type="checkbox" class="form-check-input" id="exampleCheck1" />
+      <input
+        name="remember"
+        type="checkbox"
+        class="form-check-input"
+        id="exampleCheck1"
+      />
       <label class="form-check-label" for="exampleCheck1">Remembert Me</label>
     </div>
     <div class="mb-3">
       <a href="./Register" class="text-decoration-none">Register</a>
+    </div>
+    <div class="mb-3">
+      <div
+        class="g-recaptcha"
+        data-sitekey="6LfdtGYlAAAAADPKn0zdN-rDtx2stwAG6fUtZ7-5"
+      ></div>
     </div>
     <div class="d-grid gap-2">
       <button type="submit" class="btn btn btn-outline-primary">Submit</button>
     </div>
   </form>
 </div>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <%- include('./includes/footer') %>

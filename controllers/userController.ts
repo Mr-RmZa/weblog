@@ -2,14 +2,15 @@ import { User } from "../models/User";
 import bcrypt from "bcryptjs";
 import passport from "passport";
 import { schema } from "../models/secure/userValidation";
+import axios from "axios";
 
 export class userController {
   public static login(
-    req: any,
+    req: { flash: (arg0: string) => any },
     res: {
       render: (
         arg0: string,
-        arg1: { pageTitle: string; message: string; error: string }
+        arg1: { pageTitle: string; message: any; error: any }
       ) => void;
     }
   ) {
@@ -27,12 +28,25 @@ export class userController {
     res.render("register", { pageTitle: "Register" });
   }
 
-  public static handleLogin(req: any, res: any, next: any) {
-    passport.authenticate("local", {
-      // successRedirect: "/admin",
-      failureRedirect: "/admin/login",
-      failureFlash: true,
-    })(req, res, next);
+  public static async handleLogin(req: any, res: any, next: any) {
+    const GRR = req.body["g-recaptcha-response"];
+    if (!GRR) {
+      req.flash("error", "recaptcha is required");
+      return res.redirect("/admin/login");
+    }
+
+    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA}&response=${GRR}&remoteip=${req.connection.remoteAddress}`;
+    const response = await axios.post(verifyUrl);
+
+    if (response.data.success) {
+      passport.authenticate("local", {
+        failureRedirect: "/admin/login",
+        failureFlash: true,
+      })(req, res, next);
+    } else {
+      req.flash("error", "recaptcha error");
+      res.redirect("/admin/login");
+    }
   }
 
   public static rememberMe(
@@ -61,12 +75,12 @@ export class userController {
 
   public static async createUser(
     req: {
-      flash(arg0: string, arg1: string): unknown;
-      body: any;
+      body: { fullname: any; email: any; password: any };
+      flash: (arg0: string, arg1: string) => void;
     },
     res: {
+      render: (arg0: string, arg1: { pageTitle: string; errors?: any }) => any;
       redirect: (arg0: string) => void;
-      render: (arg0: string, arg1: { pageTitle: string; errors?: any }) => void;
     }
   ) {
     const errors = [];

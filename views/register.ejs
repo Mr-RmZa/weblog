@@ -49,9 +49,11 @@
         required
       />
     </div>
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-      <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    <div class="mb-3">
+      <div
+        class="g-recaptcha"
+        data-sitekey="6LfdtGYlAAAAADPKn0zdN-rDtx2stwAG6fUtZ7-5"
+      ></div>
     </div>
     <div class="mb-3">
       <a href="./login" class="text-decoration-none">I Have Account</a>
@@ -61,4 +63,5 @@
     </div>
   </form>
 </div>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <%- include('./includes/footer') %>

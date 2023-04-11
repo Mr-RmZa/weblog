@@ -1,6 +1,6 @@
 <%- include('./includes/header') %>
 <div class="container">
-  <%- include('./includes/loginMassage') %>
+  <%- include('./includes/massage') %>
   <form action="/admin/login" method="post">
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -35,13 +35,13 @@
       <label class="form-check-label" for="exampleCheck1">Remembert Me</label>
     </div>
     <div class="mb-3">
-      <a href="./Register" class="text-decoration-none">Register</a>
-    </div>
-    <div class="mb-3">
       <div
         class="g-recaptcha"
         data-sitekey="6LfdtGYlAAAAADPKn0zdN-rDtx2stwAG6fUtZ7-5"
       ></div>
+    </div>
+    <div class="mb-3">
+      <a href="./Register" class="text-decoration-none">I Dont Have Account</a>
     </div>
     <div class="d-grid gap-2">
       <button type="submit" class="btn btn btn-outline-primary">Submit</button>

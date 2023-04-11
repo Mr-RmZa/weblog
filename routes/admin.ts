@@ -4,13 +4,15 @@ import { auth } from "../middlewares/auth";
 
 export const routerAdmin = Router();
 
-routerAdmin.get("/", auth.authenticated, (req, res) => {
-  res.render("admin", { pageTitle: "Dashboard" });
-});
+routerAdmin.get("/", auth.authenticated, userController.dashboard);
 
 routerAdmin.get("/login", userController.login);
 
-routerAdmin.post("/login", userController.handleLogin, userController.rememberMe);
+routerAdmin.post(
+  "/login",
+  userController.handleLogin,
+  userController.rememberMe
+);
 
 routerAdmin.get("/logout", auth.authenticated, userController.logout);
 

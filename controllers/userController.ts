@@ -5,6 +5,22 @@ import { schema } from "../models/secure/userValidation";
 import axios from "axios";
 
 export class userController {
+  public static dashboard(
+    req: { flash: (arg0: string) => any },
+    res: {
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; message: any; error: any }
+      ) => void;
+    }
+  ) {
+    res.render("admin", {
+      pageTitle: "Dashboard",
+      message: req.flash("success_msg"),
+      error: req.flash("error"),
+    });
+  }
+
   public static login(
     req: { flash: (arg0: string) => any },
     res: {
@@ -22,10 +38,19 @@ export class userController {
   }
 
   public static register(
-    req: any,
-    res: { render: (arg0: string, arg1: { pageTitle: string }) => void }
+    req: { flash: (arg0: string) => any },
+    res: {
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; message: any; error: any }
+      ) => void;
+    }
   ) {
-    res.render("register", { pageTitle: "Register" });
+    res.render("register", {
+      pageTitle: "Register",
+      message: req.flash("success_msg"),
+      error: req.flash("error"),
+    });
   }
 
   public static async handleLogin(req: any, res: any, next: any) {
@@ -51,6 +76,7 @@ export class userController {
 
   public static rememberMe(
     req: {
+      flash(arg0: string, arg1: string): unknown;
       body: { remember: any };
       session: { cookie: { originalMaxAge: number; expires: null } };
     },
@@ -61,14 +87,23 @@ export class userController {
     } else {
       req.session.cookie.expires = null;
     }
+    req.flash("error", "login was successfully");
     res.redirect("/admin");
   }
 
   public static logout(
-    req: { session: { destroy: (arg0: (err: any) => void) => void } },
-    res: { redirect: (arg0: string) => void }
+    req: {
+      logout: (arg0: (err: any) => any) => void;
+      flash: (arg0: string, arg1: string) => void;
+    },
+    res: { redirect: (arg0: string) => void },
+    next: (arg0: any) => any
   ) {
-    req.session.destroy(function (err: any) {
+    req.logout((err: any) => {
+      if (err) {
+        return next(err);
+      }
+      req.flash("success_msg", "logout was successfully");
       res.redirect("/");
     });
   }
@@ -78,22 +113,14 @@ export class userController {
       body: { fullname: any; email: any; password: any };
       flash: (arg0: string, arg1: string) => void;
     },
-    res: {
-      render: (arg0: string, arg1: { pageTitle: string; errors?: any }) => any;
-      redirect: (arg0: string) => void;
-    }
+    res: { redirect: (arg0: string) => void }
   ) {
-    const errors = [];
-
     try {
       const { fullname, email, password } = req.body;
       const user = await User.findOne({ email });
       if (user) {
-        errors.push("Duplicate email");
-        return res.render("register", {
-          pageTitle: "Register",
-          errors,
-        });
+        req.flash("error", "Duplicate Email!");
+        res.redirect("/admin/register");
       }
       schema
         .validate(req.body, { abortEarly: false })
@@ -107,20 +134,14 @@ export class userController {
           });
 
           req.flash("success_msg", "register successfully!");
-
           res.redirect("/admin/login");
         })
         .catch((err: { errors: any }) => {
-          console.log(err.errors);
-          return res.render("register", {
-            pageTitle: "register",
-            errors: err.errors,
-          });
+          req.flash("error", err.errors);
+          res.redirect("/admin/register");
         });
     } catch (error) {
-      return res.render("/register", {
-        pageTitle: "register",
-      });
+      res.redirect("/admin/register");
     }
   }
 }

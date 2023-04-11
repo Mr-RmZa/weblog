@@ -8,7 +8,7 @@ passport.use(
     try {
       const user = await User.findOne({ email });
       if (!user) {
-        return done(null, false, { message: "not fount user" });
+        return done(null, false, { message: "email or password not true" });
       }
       const isMatch = await bcrypt.compare(password, user.password!);
       if (isMatch) {

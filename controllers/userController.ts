@@ -14,7 +14,7 @@ export class userController {
       ) => void;
     }
   ) {
-    res.render("admin", {
+    res.render("users/index", {
       pageTitle: "Dashboard",
       message: req.flash("success_msg"),
       error: req.flash("error"),
@@ -30,7 +30,7 @@ export class userController {
       ) => void;
     }
   ) {
-    res.render("login", {
+    res.render("users/login", {
       pageTitle: "Login",
       message: req.flash("success_msg"),
       error: req.flash("error"),
@@ -46,7 +46,7 @@ export class userController {
       ) => void;
     }
   ) {
-    res.render("register", {
+    res.render("users/register", {
       pageTitle: "Register",
       message: req.flash("success_msg"),
       error: req.flash("error"),
@@ -87,7 +87,7 @@ export class userController {
     } else {
       req.session.cookie.expires = null;
     }
-    req.flash("error", "login was successfully");
+    req.flash("success_msg", "login was successfully");
     res.redirect("/admin");
   }
 

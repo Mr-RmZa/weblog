@@ -11,6 +11,7 @@ import flash from "connect-flash";
 import passport from "passport";
 import MongoStore from "connect-mongo";
 import { morganStream } from "./config/winston";
+import { routerBlog } from "./routes/blog";
 
 // env
 dotenv.config({ path: "./config/config.env" });
@@ -56,6 +57,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // routes
 app.use("/", router);
 app.use("/admin", routerAdmin);
+app.use("/blog", routerBlog);
 app.use((req, res) => {
   res.render("404", { pageTitle: "404 | not found" });
 });

@@ -1,18 +1,7 @@
-<%- include('./includes/header') %>
+<%- include('../includes/header') %>
 <div class="container">
-  <%- include('./includes/massage') %>
-  <form action="/admin/register" method="post">
-    <div class="mb-3">
-      <label for="exampleInputName1" class="form-label">Full Name</label>
-      <input
-        type="text"
-        class="form-control"
-        id="exampleInputName1"
-        name="fullname"
-        placeholder="Full Name"
-        required
-      />
-    </div>
+  <%- include('../includes/massage') %>
+  <form action="/admin/login" method="post">
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">Email address</label>
       <input
@@ -36,18 +25,14 @@
         required
       />
     </div>
-    <div class="mb-3">
-      <label for="exampleInputPassword2" class="form-label"
-        >Confirm Password</label
-      >
+    <div class="mb-3 form-check">
       <input
-        type="password"
-        class="form-control"
-        id="exampleInputPassword2"
-        name="confirmPassword"
-        placeholder="Confirm Password"
-        required
+        name="remember"
+        type="checkbox"
+        class="form-check-input"
+        id="exampleCheck1"
       />
+      <label class="form-check-label" for="exampleCheck1">Remembert Me</label>
     </div>
     <div class="mb-3">
       <div
@@ -56,7 +41,7 @@
       ></div>
     </div>
     <div class="mb-3">
-      <a href="./login" class="text-decoration-none">I Have Account</a>
+      <a href="./register" class="text-decoration-none">I Dont Have Account</a>
     </div>
     <div class="d-grid gap-2">
       <button type="submit" class="btn btn btn-outline-primary">Submit</button>
@@ -64,4 +49,4 @@
   </form>
 </div>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-<%- include('./includes/footer') %>
+<%- include('../includes/footer') %>

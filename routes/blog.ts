@@ -4,4 +4,6 @@ import { auth } from "../middlewares/auth";
 
 export const routerBlog = Router();
 
-routerBlog.get("/create", auth.authenticated,postController.create);
+routerBlog.get("/create", auth.authenticated, postController.index);
+
+routerBlog.post("/create", postController.create);

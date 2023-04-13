@@ -1,5 +1,7 @@
+import { Blog } from "../models/Blog";
+
 export class postController {
-  public static create(
+  public static index(
     req: { flash: (arg0: string) => any },
     res: {
       render: (
@@ -13,5 +15,17 @@ export class postController {
       message: req.flash("success_msg"),
       error: req.flash("error"),
     });
+  }
+
+  public static async create(
+    req: { body: any; user: { id: any } },
+    res: any
+  ) {
+    try {
+      await Blog.create({ ...req.body, user: req.user.id });
+      res.redirect("/admin");
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

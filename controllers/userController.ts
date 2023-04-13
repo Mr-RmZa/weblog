@@ -3,22 +3,40 @@ import bcrypt from "bcryptjs";
 import passport from "passport";
 import { schema } from "../models/secure/userValidation";
 import axios from "axios";
+import { Blog } from "../models/Blog";
+import { formatDate } from "../utils/jalali";
 
 export class userController {
-  public static dashboard(
-    req: { flash: (arg0: string) => any },
+  public static async dashboard(
+    req: any,
     res: {
       render: (
         arg0: string,
-        arg1: { pageTitle: string; message: any; error: any }
+        arg1: {
+          pageTitle: string;
+          message: any;
+          error: any;
+          name: string;
+          blogs: any;
+          formatDate: any
+        }
       ) => void;
     }
   ) {
-    res.render("users/index", {
-      pageTitle: "Dashboard",
-      message: req.flash("success_msg"),
-      error: req.flash("error"),
-    });
+    try {
+      const blogs = await Blog.find({ user: req.user.id });
+
+      res.render("users/index", {
+        pageTitle: "Dashboard",
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+        name: req.user.fullname,
+        blogs,
+        formatDate
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public static login(

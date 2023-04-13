@@ -1,7 +1,7 @@
 <%- include('../includes/header') %>
 <div class="container">
   <%- include('../includes/massage') %>
-  <form action="/admin/login" method="post">
+  <form action="/blog/create" method="post">
     <div class="mb-3">
       <label for="exampleInputTitle1" class="form-label">Title</label>
       <input
@@ -21,6 +21,7 @@
       <textarea
         class="form-control"
         id="exampleFormControlTextarea1"
+        name="body"
         rows="3"
       ></textarea>
     </div>
@@ -32,6 +33,7 @@
           type="radio"
           name="status"
           id="status1"
+          value="public"
         />
         <label class="form-check-label" for="status1"> public </label>
       </div>
@@ -41,6 +43,7 @@
           type="radio"
           name="status"
           id="status2"
+          value="privet"
           checked
         />
         <label class="form-check-label" for="status2"> privet </label>
@@ -51,4 +54,13 @@
     </div>
   </form>
 </div>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.21.0/ckeditor.js"
+  integrity="sha512-ff67djVavIxfsnP13CZtuHqf7VyX62ZAObYle+JlObWZvS4/VQkNVaFBOO6eyx2cum8WtiZ0pqyxLCQKC7bjcg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script>
+  CKEDITOR.replace("body", {language: "fa"})
+</script>
 <%- include('../includes/footer') %>

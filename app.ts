@@ -12,6 +12,7 @@ import passport from "passport";
 import MongoStore from "connect-mongo";
 import { morganStream } from "./config/winston";
 import { routerBlog } from "./routes/blog";
+import { errorController } from "./controllers/errorController";
 
 // env
 dotenv.config({ path: "./config/config.env" });
@@ -21,6 +22,7 @@ connect.mongodb();
 
 // passport configuration
 import "./config/passport";
+import { routerError } from "./routes/error";
 
 const app = express();
 
@@ -40,6 +42,7 @@ app.use(
     secret: "foo",
     store: MongoStore.create({ mongoUrl: "mongodb://localhost/test" }),
     resave: false,
+    unset: "destroy",
     saveUninitialized: false,
   })
 );
@@ -58,9 +61,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", router);
 app.use("/admin", routerAdmin);
 app.use("/blog", routerBlog);
-app.use((req, res) => {
-  res.render("404", { pageTitle: "404 | not found" });
-});
+app.use("/error", routerError);
+app.use(errorController[404]);
 
 app.listen(process.env.PORT, () =>
   log.green(`start server port : ${process.env.PORT}`)

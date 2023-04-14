@@ -1,7 +1,7 @@
 import { User } from "../models/User";
 import bcrypt from "bcryptjs";
 import passport from "passport";
-import { schema } from "../models/secure/userValidation";
+import { schemaUser } from "../models/secure/userValidation";
 import axios from "axios";
 import { Blog } from "../models/Blog";
 import { formatDate } from "../utils/jalali";
@@ -10,6 +10,7 @@ export class userController {
   public static async dashboard(
     req: any,
     res: {
+      redirect(arg0: string): unknown;
       render: (
         arg0: string,
         arg1: {
@@ -18,7 +19,7 @@ export class userController {
           error: any;
           name: string;
           blogs: any;
-          formatDate: any
+          formatDate: any;
         }
       ) => void;
     }
@@ -32,10 +33,11 @@ export class userController {
         error: req.flash("error"),
         name: req.user.fullname,
         blogs,
-        formatDate
+        formatDate,
       });
     } catch (error) {
       console.log(error);
+      res.redirect("/error/500");
     }
   }
 
@@ -72,23 +74,28 @@ export class userController {
   }
 
   public static async handleLogin(req: any, res: any, next: any) {
-    const GRR = req.body["g-recaptcha-response"];
-    if (!GRR) {
-      req.flash("error", "recaptcha is required");
-      return res.redirect("/admin/login");
-    }
+    try {
+      const GRR = req.body["g-recaptcha-response"];
+      if (!GRR) {
+        req.flash("error", "recaptcha is required");
+        return res.redirect("/admin/login");
+      }
 
-    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA}&response=${GRR}&remoteip=${req.connection.remoteAddress}`;
-    const response = await axios.post(verifyUrl);
+      const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA}&response=${GRR}&remoteip=${req.connection.remoteAddress}`;
+      const response = await axios.post(verifyUrl);
 
-    if (response.data.success) {
-      passport.authenticate("local", {
-        failureRedirect: "/admin/login",
-        failureFlash: true,
-      })(req, res, next);
-    } else {
-      req.flash("error", "recaptcha error");
-      res.redirect("/admin/login");
+      if (response.data.success) {
+        passport.authenticate("local", {
+          failureRedirect: "/admin/login",
+          failureFlash: true,
+        })(req, res, next);
+      } else {
+        req.flash("error", "recaptcha error");
+        res.redirect("/admin/login");
+      }
+    } catch (error) {
+      console.log(error);
+      res.redirect("/error/500");
     }
   }
 
@@ -140,9 +147,9 @@ export class userController {
         req.flash("error", "Duplicate Email!");
         res.redirect("/admin/register");
       }
-      schema
+      schemaUser
         .validate(req.body, { abortEarly: false })
-        .then((result: any) => {
+        .then(() => {
           bcrypt.hash(password, 10).then(async (res) => {
             await User.create({
               fullname,
@@ -159,7 +166,8 @@ export class userController {
           res.redirect("/admin/register");
         });
     } catch (error) {
-      res.redirect("/admin/register");
+      console.log(error);
+      res.redirect("/error/500");
     }
   }
 }

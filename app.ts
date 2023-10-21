@@ -40,10 +40,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: "foo",
-    store: MongoStore.create({ mongoUrl: "mongodb://localhost/test" }),
     resave: false,
     unset: "destroy",
     saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL })
   })
 );
 

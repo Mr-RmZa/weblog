@@ -33,7 +33,7 @@ export class userController {
         error: req.flash("error"),
         name: req.user.fullname,
         blogs,
-        formatDate,
+        formatDate
       });
     } catch (error) {
       console.log(error);
@@ -53,7 +53,7 @@ export class userController {
     res.render("users/login", {
       pageTitle: "Login",
       message: req.flash("success_msg"),
-      error: req.flash("error"),
+      error: req.flash("error")
     });
   }
 
@@ -69,7 +69,7 @@ export class userController {
     res.render("users/register", {
       pageTitle: "Register",
       message: req.flash("success_msg"),
-      error: req.flash("error"),
+      error: req.flash("error")
     });
   }
 
@@ -87,7 +87,7 @@ export class userController {
       if (response.data.success) {
         passport.authenticate("local", {
           failureRedirect: "/admin/login",
-          failureFlash: true,
+          failureFlash: true
         })(req, res, next);
       } else {
         req.flash("error", "recaptcha error");
@@ -154,7 +154,7 @@ export class userController {
             await User.create({
               fullname,
               email,
-              password: res,
+              password: res
             });
           });
 

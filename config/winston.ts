@@ -9,7 +9,7 @@ const options = {
     handleExceptions: true,
     format: winston.format.json(),
     maxsize: 5000000, //5MB
-    maxFile: 5,
+    maxFile: 5
   },
   console: {
     level: "debug",
@@ -17,20 +17,20 @@ const options = {
     format: winston.format.combine(
       winston.format.colorize(),
       winston.format.simple()
-    ),
-  },
+    )
+  }
 };
 
 const logger = winston.createLogger({
   transports: [
     new winston.transports.File(options.File),
-    new winston.transports.Console(options.console),
+    new winston.transports.Console(options.console)
   ],
-  exitOnError: false,
+  exitOnError: false
 });
 
 export const morganStream: StreamOptions = {
   write: (message) => {
     logger.info(message.trim());
-  },
+  }
 };

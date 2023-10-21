@@ -14,7 +14,7 @@ export class postController {
     res.render("posts/createPost", {
       pageTitle: "createPost",
       message: req.flash("success_msg"),
-      error: req.flash("error"),
+      error: req.flash("error")
     });
   }
 

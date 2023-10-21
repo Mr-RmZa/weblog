@@ -9,5 +9,5 @@ export const schemaPost = object().shape({
   status: mixed().oneOf(
     ["public", "private"],
     "choose between private or public status"
-  ),
+  )
 });

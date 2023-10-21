@@ -6,6 +6,6 @@ router.get("/", (req, res) => {
   res.render("index", {
     pageTitle: "Blog",
     message: req.flash("success_msg"),
-    error: req.flash("error"),
+    error: req.flash("error")
   });
 });

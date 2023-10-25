@@ -52,6 +52,17 @@
         <label class="form-check-label" for="status2"> privet </label>
       </div>
     </div>
+    <label id="imageStatus" for="selectedImage" class="form-label"
+      >files input example</label
+    >
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <button type="button" class="btn btn-outline-primary" id="imageUpload">
+          upload file
+        </button>
+      </div>
+      <input class="form-control" type="file" id="selectedImage" />
+    </div>
     <div class="d-grid gap-2">
       <button type="submit" class="btn btn btn-outline-primary">Submit</button>
     </div>
@@ -63,6 +74,7 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 ></script>
+<script src="/js/upload.js"></script>
 <script>
   CKEDITOR.replace("body", { language: "fa" });
 </script>

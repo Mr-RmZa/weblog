@@ -1,10 +1,10 @@
-import { User } from "../models/User";
+import axios from "axios";
 import bcrypt from "bcryptjs";
 import passport from "passport";
-import { schemaUser } from "../models/secure/userValidation";
-import axios from "axios";
+import { User } from "../models/User";
 import { Blog } from "../models/Blog";
 import { formatDate } from "../utils/jalali";
+import { schemaUser } from "../models/secure/userValidation";
 
 export class userController {
   public static async dashboard(

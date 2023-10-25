@@ -1,4 +1,4 @@
-import { mixed, object, ref, string } from "yup";
+import { mixed, object, string } from "yup";
 
 export const schemaPost = object().shape({
   title: string()

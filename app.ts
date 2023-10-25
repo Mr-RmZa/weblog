@@ -1,17 +1,17 @@
-import { log } from "console-log-colors";
-import express from "express";
 import path from "path";
-import { router } from "./routes";
 import morgan from "morgan";
-import connect from "./config/db";
-import * as dotenv from "dotenv";
-import { routerAdmin } from "./routes/admin";
-import session from "express-session";
-import flash from "connect-flash";
+import express from "express";
 import passport from "passport";
+import * as dotenv from "dotenv";
+import { router } from "./routes";
+import connect from "./config/db";
+import flash from "connect-flash";
+import session from "express-session";
 import MongoStore from "connect-mongo";
-import { morganStream } from "./config/winston";
+import { log } from "console-log-colors";
 import { routerBlog } from "./routes/blog";
+import { routerAdmin } from "./routes/admin";
+import { morganStream } from "./config/winston";
 import { errorController } from "./controllers/errorController";
 
 // env

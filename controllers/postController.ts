@@ -1,10 +1,11 @@
+import sharp from "sharp";
 import multer from "multer";
-import { v4 as uuidv4 } from "uuid";
+import { ParsedQs } from "qs";
+import shortId from "shortid";
 import { Blog } from "../models/Blog";
+import { fileFilter, storage } from "../utils/multer";
 import { schemaPost } from "../models/secure/postValidation";
 import { Request, ParamsDictionary, Response } from "express-serve-static-core";
-import { ParsedQs } from "qs";
-import { fileFilter, storage } from "../utils/multer";
 
 export class postController {
   public static index(
@@ -55,19 +56,34 @@ export class postController {
   ) {
     const upload = multer({
       limits: { fileSize: 4000000 },
-      dest: "uploads/",
-      storage: storage,
+      // dest: "uploads/",
+      // storage: storage,
       fileFilter: fileFilter
     }).single("image");
+    //req.file
+    // console.log(req.file)
 
-    upload(req, res, (err) => {
+    upload(req, res, async (err) => {
       if (err) {
-        res.send(err);
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res
+            .status(400)
+            .send("The size of the photo sent should not be more than 4 MB");
+        }
+        res.status(400).send(err);
       } else {
         if (req.file) {
-          res.status(200).send("آپلود عکس موفقیت آمیز بود");
+          const fileName = `${shortId.generate()}_${req.file.originalname}`;
+          await sharp(req.file.buffer)
+            .jpeg({
+              quality: 60
+            })
+            .toFile(`./public/uploads/${fileName}`)
+            .catch((err) => console.log(err));
+          // res.json({"message" : "", "address" : ""});
+          res.status(200).send(`http://localhost:3000/uploads/${fileName}`);
         } else {
-          res.send("جهت آپلود باید عکسی انتخاب کنید");
+          res.send("You must select a photo to upload");
         }
       }
     });

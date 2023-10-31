@@ -52,16 +52,39 @@
         <label class="form-check-label" for="status2"> privet </label>
       </div>
     </div>
-    <label id="imageStatus" for="selectedImage" class="form-label"
-      >files input example</label
-    >
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <button type="button" class="btn btn-outline-primary" id="imageUpload">
-          upload file
-        </button>
+    <div class="mb-3">
+      <div class="row">
+        <div class="col">
+          <label id="imageStatus" class="form-label"></label>
+        </div>
+        <div class="col">
+          <label id="uploadResult" class="form-label float-end"></label>
+        </div>
       </div>
-      <input class="form-control" type="file" id="selectedImage" />
+      <label for="selectedImage" class="form-label">File Upload</label>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            id="imageUpload"
+          >
+            upload file
+          </button>
+        </div>
+        <input class="form-control" type="file" id="selectedImage" />
+      </div>
+      <div id="progressDiv" style="display: none">
+        <div class="progress">
+          <div
+            id="progressBar"
+            class="progress-bar progress-bar-striped progress-bar-animated"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+        </div>
+      </div>
     </div>
     <div class="d-grid gap-2">
       <button type="submit" class="btn btn btn-outline-primary">Submit</button>

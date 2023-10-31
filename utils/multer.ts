@@ -1,5 +1,5 @@
-import { Request } from "express"; // Import the Request type from Express if you're using Express
 import multer from "multer";
+import { Request } from "express"; // Import the Request type from Express if you're using Express
 import { v4 as uuidv4 } from "uuid";
 
 export const storage = multer.diskStorage({
@@ -27,6 +27,6 @@ export const fileFilter = (
   if (file.mimetype === "image/jpeg") {
     cb(null, true);
   } else {
-    cb(new Error("تنها پسوند JPEG پشتیبانی می‌شود"), false);
+    cb("Only JPEG extension is supported", false);
   }
 };

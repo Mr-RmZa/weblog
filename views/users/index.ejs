@@ -16,20 +16,25 @@
           <tr>
             <th scope="col">Title</th>
             <th scope="col">Date</th>
-            <th scope="col">test</th>
+            <th scope="col">Body</th>
             <th scope="col">Status</th>
+            <th scope="col">Operation</th>
           </tr>
         </thead>
         <tbody>
           <% for (let blog of blogs) { %>
             <tr>
-                <td><a href="/blogs/<%= blog._id %>"></a><%= blog.title %></td>
+                <td><%= blog.title %></td>
                 <td><%= formatDate(blog.createdAt) %></td>
                 <td>تست</td>
                 <td>
                   <span class="badge <%= blog.status === "public" ? 'text-bg-success' : 'text-bg-danger' %>">
                     <%= blog.status %>
                   </span>
+                </td>
+                <td>
+                  <a href="/blog/edit/<%= blog._id %>" class="btn btn-warning">Edit</a>
+                  <a href="/blog/delete/<%= blog._id %>" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
             <% } %>

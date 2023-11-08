@@ -1,0 +1,105 @@
+<%- include('../includes/header') %>
+<div class="container">
+  <%- include('../includes/massage') %>
+  <form action="/blog/edit/<%= post._id %>" method="post">
+    <div class="mb-3">
+      <label for="exampleInputTitle1" class="form-label">Title</label>
+      <input
+        type="text"
+        class="form-control"
+        id="exampleInputTitle1"
+        aria-describedby="titleHelp"
+        name="title"
+        placeholder="title"
+        required
+        value="<%= post.title %>"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label"
+        >description</label
+      >
+      <textarea
+        class="form-control"
+        id="exampleFormControlTextarea1"
+        name="body"
+        rows="3"
+        required
+      ><%= post.body %></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Status</label>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="status"
+          id="status1"
+          value="public"
+          required
+        />
+        <label class="form-check-label" for="status1"> public </label>
+      </div>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="status"
+          id="status2"
+          value="private"
+          checked
+          required
+        />
+        <label class="form-check-label" for="status2"> privet </label>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="row">
+        <div class="col">
+          <label id="imageStatus" class="form-label"></label>
+        </div>
+        <div class="col">
+          <label id="uploadResult" class="form-label float-end"></label>
+        </div>
+      </div>
+      <label for="selectedImage" class="form-label">File Upload</label>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            id="imageUpload"
+          >
+            upload file
+          </button>
+        </div>
+        <input class="form-control" type="file" id="selectedImage" />
+      </div>
+      <div id="progressDiv" style="display: none">
+        <div class="progress">
+          <div
+            id="progressBar"
+            class="progress-bar progress-bar-striped progress-bar-animated"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div class="d-grid gap-2">
+      <button type="submit" class="btn btn btn-outline-primary">Submit</button>
+    </div>
+  </form>
+</div>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.21.0/ckeditor.js"
+  integrity="sha512-ff67djVavIxfsnP13CZtuHqf7VyX62ZAObYle+JlObWZvS4/VQkNVaFBOO6eyx2cum8WtiZ0pqyxLCQKC7bjcg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script src="/js/upload.js"></script>
+<script>
+  CKEDITOR.replace("body", { language: "fa" });
+</script>
+<%- include('../includes/footer') %>

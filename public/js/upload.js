@@ -5,16 +5,18 @@ document.getElementById("imageUpload").onclick = function () {
   const imageStatus = document.getElementById("imageStatus");
   const progressDiv = document.getElementById("progressDiv");
   const progressBar = document.getElementById("progressBar");
-  const uploadResutl = document.getElementById("uploadResult");
+  const uploadResult = document.getElementById("uploadResult");
 
   // xhttp.responseType = "json";
 
   xhttp.onreadystatechange = function () {
     if (xhttp.status === 200) {
       imageStatus.innerHTML = "Photo upload was successful"; //this.response.message
-      uploadResutl.innerHTML = this.responseText; //this.response.address
+      uploadResult.innerHTML = this.responseText; //this.response.address
+      selectedImage.value = "";
     } else {
       imageStatus.innerHTML = this.responseText;
+      uploadResult.innerHTML = "";
     }
   };
 
@@ -40,5 +42,6 @@ document.getElementById("imageUpload").onclick = function () {
     xhttp.send(formData);
   } else {
     imageStatus.innerHTML = "You must select a photo to upload";
+    uploadResult.innerHTML = "";
   }
 };

@@ -35,7 +35,7 @@
     "shortid": "^2.2.16",
     "ts-node": "^10.9.1",
     "uuid": "^9.0.1",
-    "winston": "^3.8.2",
+    "winston": "^3.11.0",
     "yup": "^1.0.2"
   },
   "devDependencies": {

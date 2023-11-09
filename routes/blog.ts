@@ -8,8 +8,8 @@ routerBlog.get("/create", auth.authenticated, postController.index);
 
 routerBlog.post("/create", postController.create);
 
-routerBlog.post(
-  "/upload-image",
-  auth.authenticated,
-  postController.uploadImage
-);
+routerBlog.post("/upload", auth.authenticated, postController.upload);
+
+routerBlog.get("/edit/:id", auth.authenticated, postController.edit);
+
+routerBlog.post("/edit/:id", auth.authenticated, postController.update);

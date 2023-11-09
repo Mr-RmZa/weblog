@@ -7,7 +7,7 @@ export const schemaPost = object().shape({
     .max(100, "title maximum 100 character"),
   body: string().required("description is required"),
   status: mixed().oneOf(
-    ["public", "private"],
+    ["private", "public"],
     "choose between private or public status"
   )
 });

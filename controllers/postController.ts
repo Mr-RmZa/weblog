@@ -3,6 +3,7 @@ import multer from "multer";
 import { ParsedQs } from "qs";
 import shortId from "shortid";
 import { Blog } from "../models/Blog";
+import { errorController } from "./errorController";
 import { fileFilter, storage } from "../utils/multer";
 import { schemaPost } from "../models/secure/postValidation";
 import { Request, ParamsDictionary, Response } from "express-serve-static-core";
@@ -20,11 +21,11 @@ export class postController {
     res.render("posts/createPost", {
       pageTitle: "createPost",
       message: req.flash("success_msg"),
-      error: req.flash("error")
+      error: req.flash("error"),
     });
   }
 
-  public static async create(
+  public static create(
     req: {
       body: any;
       user: { id: any };
@@ -50,7 +51,7 @@ export class postController {
     }
   }
 
-  public static async uploadImage(
+  public static upload(
     req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
     res: Response<any, Record<string, any>, number>
   ) {
@@ -58,7 +59,7 @@ export class postController {
       limits: { fileSize: 4000000 },
       // dest: "uploads/",
       // storage: storage,
-      fileFilter: fileFilter
+      fileFilter: fileFilter,
     }).single("image");
     //req.file
     // console.log(req.file)
@@ -76,7 +77,7 @@ export class postController {
           const fileName = `${shortId.generate()}_${req.file.originalname}`;
           await sharp(req.file.buffer)
             .jpeg({
-              quality: 60
+              quality: 60,
             })
             .toFile(`./public/uploads/${fileName}`)
             .catch((err) => console.log(err));
@@ -87,5 +88,68 @@ export class postController {
         }
       }
     });
+  }
+
+  public static async edit(req: any, res: any) {
+    const post = await Blog.findOne({
+      _id: req.params.id,
+    });
+
+    if (!post) {
+      return errorController[404];
+    }
+
+    if (post.user!.toString() != req.user._id) {
+      return res.redirect("/admin");
+    } else {
+      res.render("posts/editPost", {
+        pageTitle: "editPost",
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+        post,
+      });
+    }
+  }
+
+  public static update(
+    req: {
+      body: { title: any; status: any; body: any };
+      params: { id: any };
+      user: { _id: string };
+      flash: (arg0: string, arg1: string) => void;
+    },
+    res: any
+  ) {
+    try {
+      schemaPost
+        .validate(req.body, { abortEarly: false })
+        .then(async () => {
+          const post = await Blog.findOne({ _id: req.params.id });
+
+          if (!post) {
+            return res.redirect("errors/404");
+          }
+
+          if (post.user!.toString() != req.user._id) {
+            return res.redirect("/dashboard");
+          } else {
+            const { title, status, body } = req.body;
+            post.title = title;
+            post.status = status;
+            post.body = body;
+
+            await post.save();
+            req.flash("success_msg", "post edited!");
+            res.redirect("/admin");
+          }
+        })
+        .catch((err: { errors: any }) => {
+          req.flash("error", err.errors);
+          res.redirect("/blog/create");
+        });
+    } catch (error) {
+      console.log(error);
+      res.redirect("/error/500");
+    }
   }
 }

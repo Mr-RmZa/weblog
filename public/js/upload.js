@@ -20,7 +20,7 @@ document.getElementById("imageUpload").onclick = function () {
     }
   };
 
-  xhttp.open("POST", "/blog/upload-image");
+  xhttp.open("POST", "/blog/upload");
 
   xhttp.upload.onprogress = function (e) {
     if (e.lengthComputable) {
@@ -37,9 +37,14 @@ document.getElementById("imageUpload").onclick = function () {
   let formData = new FormData();
 
   if (selectedImage.files.length > 0) {
-    progressDiv.style = "display: block";
-    formData.append("image", selectedImage.files[0]);
-    xhttp.send(formData);
+    const suffix = selectedImage.files[0].name.split(".");
+    if (suffix[1] === "jpg") {
+      progressDiv.style = "display: block";
+      formData.append("image", selectedImage.files[0]);
+      xhttp.send(formData);
+    } else {
+      imageStatus.innerHTML = "Only JPEG extension is supported";
+    }
   } else {
     imageStatus.innerHTML = "You must select a photo to upload";
     uploadResult.innerHTML = "";

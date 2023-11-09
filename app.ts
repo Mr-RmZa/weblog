@@ -39,11 +39,11 @@ app.use(express.urlencoded({ extended: true }));
 // session
 app.use(
   session({
-    secret: "foo",
     resave: false,
     unset: "destroy",
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL })
+    secret: process.env.SESSION_SECRET!,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI })
   })
 );
 

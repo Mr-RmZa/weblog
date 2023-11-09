@@ -37,6 +37,9 @@
           id="status1"
           value="public"
           required
+          <% if (post.status === "public") { %>
+            checked
+          <% } %>
         />
         <label class="form-check-label" for="status1"> public </label>
       </div>
@@ -47,8 +50,10 @@
           name="status"
           id="status2"
           value="private"
-          checked
           required
+          <% if (post.status === "private") { %>
+            checked
+          <% } %>
         />
         <label class="form-check-label" for="status2"> privet </label>
       </div>

@@ -10,7 +10,7 @@
     <div class="col">
       <h1>Last Post</h1>
       <table
-        class="table table-dark table-striped table-hover table-bordered border-primary table-sm"
+        class="table table-dark table-striped table-hover table-bordered border-primary table-sm text-center"
       >
         <thead>
           <tr>
@@ -26,7 +26,7 @@
             <tr>
                 <td><%= blog.title %></td>
                 <td><%= formatDate(blog.createdAt) %></td>
-                <td>تست</td>
+                <td><%= blog.body %></td>
                 <td>
                   <span class="badge <%= blog.status === "public" ? 'text-bg-success' : 'text-bg-danger' %>">
                     <%= blog.status %>

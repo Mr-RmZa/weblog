@@ -20,20 +20,38 @@ export class userController {
           name: string;
           blogs: any;
           formatDate: any;
+          currentPage: number;
+          nextPage: number;
+          previousPage: number;
+          hasNextPage: boolean;
+          hasPreviousPage: boolean;
+          lastPage: number;
         }
       ) => void;
     }
   ) {
+    const page = +req.query.page || 1;
+    const postPerPage = 2;
     try {
-      const blogs = await Blog.find({ user: req.user.id });
-
+      const numberOfPosts = await Blog.find({
+        user: req.user._id
+      }).countDocuments();
+      const blogs = await Blog.find({ user: req.user.id })
+        .skip((page - 1) * postPerPage)
+        .limit(postPerPage);
       res.render("users/index", {
         pageTitle: "Dashboard",
         message: req.flash("success_msg"),
         error: req.flash("error"),
         name: req.user.fullname,
         blogs,
-        formatDate
+        formatDate,
+        currentPage: page,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        hasNextPage: postPerPage * page < numberOfPosts,
+        hasPreviousPage: page > 1,
+        lastPage: Math.ceil(numberOfPosts / postPerPage)
       });
     } catch (error) {
       console.log(error);

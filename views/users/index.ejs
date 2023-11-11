@@ -26,7 +26,7 @@
             <tr>
                 <td><%= blog.title %></td>
                 <td><%= formatDate(blog.createdAt) %></td>
-                <td><%= blog.body %></td>
+                <td><%- blog.body %></td>
                 <td>
                   <span class="badge <%= blog.status === "public" ? 'text-bg-success' : 'text-bg-danger' %>">
                     <%= blog.status %>
@@ -34,12 +34,13 @@
                 </td>
                 <td>
                   <a href="/blog/edit/<%= blog._id %>" class="btn btn-warning">Edit</a>
-                  <a href="/blog/delete/<%= blog._id %>" class="btn btn-danger">Delete</a>
+                  <a href="/blog/delete/<%= blog._id %>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
                 </td>
             </tr>
             <% } %>
         </tbody>
       </table>
+      <%- include("../includes/pagination.ejs") %>
     </div>
     <div class="col text-end">
       <h1>Last Post</h1>

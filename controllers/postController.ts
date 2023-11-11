@@ -3,13 +3,33 @@ import multer from "multer";
 import { ParsedQs } from "qs";
 import shortId from "shortid";
 import { Blog } from "../models/Blog";
-import { errorController } from "./errorController";
+import { truncate } from "../utils/helpers";
+import { formatDate } from "../utils/jalali";
 import { fileFilter, storage } from "../utils/multer";
 import { schemaPost } from "../models/secure/postValidation";
 import { Request, ParamsDictionary, Response } from "express-serve-static-core";
 
 export class postController {
-  public static index(
+  public static async index(req: any, res: any) {
+    try {
+      const posts = await Blog.find({ status: "public" }).sort({
+        createdAt: "desc"
+      });
+      res.render("index", {
+        pageTitle: "weblog",
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+        posts,
+        formatDate,
+        truncate
+      });
+    } catch (err) {
+      console.log(err);
+      res.render("errors/500");
+    }
+  }
+
+  public static create(
     req: { flash: (arg0: string) => any },
     res: {
       render: (
@@ -21,11 +41,11 @@ export class postController {
     res.render("posts/createPost", {
       pageTitle: "createPost",
       message: req.flash("success_msg"),
-      error: req.flash("error"),
+      error: req.flash("error")
     });
   }
 
-  public static create(
+  public static store(
     req: {
       body: any;
       user: { id: any };
@@ -59,7 +79,7 @@ export class postController {
       limits: { fileSize: 4000000 },
       // dest: "uploads/",
       // storage: storage,
-      fileFilter: fileFilter,
+      fileFilter: fileFilter
     }).single("image");
     //req.file
     // console.log(req.file)
@@ -77,7 +97,7 @@ export class postController {
           const fileName = `${shortId.generate()}_${req.file.originalname}`;
           await sharp(req.file.buffer)
             .jpeg({
-              quality: 60,
+              quality: 60
             })
             .toFile(`./public/uploads/${fileName}`)
             .catch((err) => console.log(err));
@@ -92,11 +112,11 @@ export class postController {
 
   public static async edit(req: any, res: any) {
     const post = await Blog.findOne({
-      _id: req.params.id,
+      _id: req.params.id
     });
 
     if (!post) {
-      return errorController[404];
+      return res.redirect("errors/404");
     }
 
     if (post.user!.toString() != req.user._id) {
@@ -106,7 +126,7 @@ export class postController {
         pageTitle: "editPost",
         message: req.flash("success_msg"),
         error: req.flash("error"),
-        post,
+        post
       });
     }
   }
@@ -150,6 +170,23 @@ export class postController {
     } catch (error) {
       console.log(error);
       res.redirect("/error/500");
+    }
+  }
+
+  public static async delete(
+    req: { params: { id: any }; flash: (arg0: string, arg1: string) => void },
+    res: { redirect: (arg0: string) => void }
+  ) {
+    const post = await Blog.findOne({
+      _id: req.params.id
+    });
+    if (post) {
+      const result = await Blog.findByIdAndRemove(req.params.id);
+      console.log(result);
+      req.flash("success_msg", "post deleted!");
+      res.redirect("/admin");
+    } else {
+      return res.redirect("errors/404");
     }
   }
 }

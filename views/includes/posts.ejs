@@ -1,19 +1,27 @@
 <% if(posts.length > 0) { %> <% for(let post of posts) { %>
 <div class="container">
   <div class="row">
-    <div class="card text-dark mt-4 mb-4">
-      <img
-        class="card-img-top"
-        src="http://placehold.it/750x300"
-        alt="Card image cap"
-      />
-      <div class="card-body">
-        <h2 class="card-title"><%= post.title %></h2>
-        <p class="card-text text-justify"><%- truncate(post.body, 400) %></p>
-        <a href="/post/<%= post._id %>" class="btn btn-primary">بیشتر ...</a>
-      </div>
-      <div class="card-footer text-muted">
-        پست شده در تاریخ : <%=formatDate(post.createdAt) %>
+    <div class="col">
+      <div class="card text-dark mt-4 mb-4 text-center">
+        <img
+          class="card-img-top"
+          src="http://placehold.it/750x300"
+          alt="Card image cap"
+        />
+        <div class="card-body">
+          <h2 class="card-title"><%= post.title %></h2>
+          <div class="card-text text-justify" dir="rtl">
+            <%- truncate(post.body, 300) %>
+          </div>
+          <div class="d-grid gap-2">
+            <a href="/post/<%= post._id %>" class="btn btn btn-primary"
+              >More ...</a
+            >
+          </div>
+        </div>
+        <div class="card-footer text-muted">
+          Posted in Date : <%=formatDate(post.createdAt) %>
+        </div>
       </div>
     </div>
   </div>
@@ -21,8 +29,10 @@
 <% } %> <% } else {%>
 <div class="container">
   <div class="row">
-    <div class="m-5 text-center">
-      <h1>هیچ پستی در پایگاه داده نیست</h1>
+    <div class="col">
+      <div class="m-5 text-center">
+        <h1>there is nothing</h1>
+      </div>
     </div>
   </div>
 </div>

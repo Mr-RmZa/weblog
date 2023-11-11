@@ -26,7 +26,7 @@
             <tr>
                 <td><%= blog.title %></td>
                 <td><%= formatDate(blog.createdAt) %></td>
-                <td><%- blog.body %></td>
+                <td dir="rtl"><%- truncate(blog.body, 100) %></td>
                 <td>
                   <span class="badge <%= blog.status === "public" ? 'text-bg-success' : 'text-bg-danger' %>">
                     <%= blog.status %>

@@ -11,17 +11,53 @@ import { Request, ParamsDictionary, Response } from "express-serve-static-core";
 
 export class postController {
   public static async index(req: any, res: any) {
+    const page = +req.query.page || 1;
+    const postPerPage = 5;
+
     try {
-      const posts = await Blog.find({ status: "public" }).sort({
-        createdAt: "desc"
-      });
+      const numberOfPosts = await Blog.find({
+        user: req.user._id,
+      }).countDocuments();
+
+      const posts = await Blog.find({ status: "public" })
+        .sort({
+          createdAt: "desc",
+        })
+        .skip((page - 1) * postPerPage)
+        .limit(postPerPage);
+
       res.render("index", {
         pageTitle: "weblog",
         message: req.flash("success_msg"),
         error: req.flash("error"),
         posts,
         formatDate,
-        truncate
+        truncate,
+        currentPage: page,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        hasNextPage: postPerPage * page < numberOfPosts,
+        hasPreviousPage: page > 1,
+        lastPage: Math.ceil(numberOfPosts / postPerPage),
+      });
+    } catch (err) {
+      console.log(err);
+      res.render("errors/500");
+    }
+  }
+
+  public static async show(req: any, res: any) {
+    try {
+      const post = await Blog.findOne({ _id: req.params.id }).populate("user");
+
+      if (!post) return res.redirect("errors/404");
+
+      res.render("posts/show", {
+        pageTitle: post.title,
+        post,
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+        formatDate,
       });
     } catch (err) {
       console.log(err);
@@ -38,10 +74,10 @@ export class postController {
       ) => void;
     }
   ) {
-    res.render("posts/createPost", {
+    res.render("posts/create", {
       pageTitle: "createPost",
       message: req.flash("success_msg"),
-      error: req.flash("error")
+      error: req.flash("error"),
     });
   }
 
@@ -79,7 +115,7 @@ export class postController {
       limits: { fileSize: 4000000 },
       // dest: "uploads/",
       // storage: storage,
-      fileFilter: fileFilter
+      fileFilter: fileFilter,
     }).single("image");
     //req.file
     // console.log(req.file)
@@ -97,7 +133,7 @@ export class postController {
           const fileName = `${shortId.generate()}_${req.file.originalname}`;
           await sharp(req.file.buffer)
             .jpeg({
-              quality: 60
+              quality: 60,
             })
             .toFile(`./public/uploads/${fileName}`)
             .catch((err) => console.log(err));
@@ -112,7 +148,7 @@ export class postController {
 
   public static async edit(req: any, res: any) {
     const post = await Blog.findOne({
-      _id: req.params.id
+      _id: req.params.id,
     });
 
     if (!post) {
@@ -122,11 +158,11 @@ export class postController {
     if (post.user!.toString() != req.user._id) {
       return res.redirect("/admin");
     } else {
-      res.render("posts/editPost", {
+      res.render("posts/edit", {
         pageTitle: "editPost",
         message: req.flash("success_msg"),
         error: req.flash("error"),
-        post
+        post,
       });
     }
   }
@@ -178,7 +214,7 @@ export class postController {
     res: { redirect: (arg0: string) => void }
   ) {
     const post = await Blog.findOne({
-      _id: req.params.id
+      _id: req.params.id,
     });
     if (post) {
       const result = await Blog.findByIdAndRemove(req.params.id);

@@ -1,18 +1,24 @@
 <%- include('../includes/header') %>
 <div class="container">
   <%- include('../includes/massage') %>
-  <form action="/blog/create" method="post">
+  <form action="/blog/create" method="POST" enctype="multipart/form-data">
+    <div class="mb-5">
+      <label for="thumbnail" class="form-label">thumbnail</label>
+      <input class="form-control" type="file" id="thumbnail" name="thumbnail" />
+    </div>
     <div class="mb-3">
-      <label for="exampleInputTitle1" class="form-label">Title</label>
-      <input
-        type="text"
-        class="form-control"
-        id="exampleInputTitle1"
-        aria-describedby="titleHelp"
-        name="title"
-        placeholder="title"
-        required
-      />
+      <div class="form-floating">
+        <input
+          type="search"
+          class="form-control me-2 text-dark"
+          id="exampleInputTitle1"
+          placeholder="title"
+          name="title"
+          placeholder="title"
+          required
+        />
+        <label for="exampleInputTitle1" class="text-muted">Title</label>
+      </div>
     </div>
     <div class="mb-3">
       <label for="exampleFormControlTextarea1" class="form-label"

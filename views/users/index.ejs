@@ -24,7 +24,7 @@
         <tbody>
           <% for (let blog of blogs) { %>
             <tr>
-                <td><%= blog.title %></td>
+                <td><a href="/post/<%= blog._id %>" class="text-decoration-none"><%= blog.title %></a></td>
                 <td><%= formatDate(blog.createdAt) %></td>
                 <td dir="rtl"><%- truncate(blog.body, 100) %></td>
                 <td>

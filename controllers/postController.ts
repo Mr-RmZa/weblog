@@ -2,6 +2,7 @@ import sharp from "sharp";
 import multer from "multer";
 import { ParsedQs } from "qs";
 import shortId from "shortid";
+import appRoot from "app-root-path";
 import { Blog } from "../models/Blog";
 import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
@@ -16,12 +17,12 @@ export class postController {
 
     try {
       const numberOfPosts = await Blog.find({
-        user: req.user._id,
+        status: "public"
       }).countDocuments();
 
       const posts = await Blog.find({ status: "public" })
         .sort({
-          createdAt: "desc",
+          createdAt: "desc"
         })
         .skip((page - 1) * postPerPage)
         .limit(postPerPage);
@@ -38,7 +39,7 @@ export class postController {
         previousPage: page - 1,
         hasNextPage: postPerPage * page < numberOfPosts,
         hasPreviousPage: page > 1,
-        lastPage: Math.ceil(numberOfPosts / postPerPage),
+        lastPage: Math.ceil(numberOfPosts / postPerPage)
       });
     } catch (err) {
       console.log(err);
@@ -57,7 +58,7 @@ export class postController {
         post,
         message: req.flash("success_msg"),
         error: req.flash("error"),
-        formatDate,
+        formatDate
       });
     } catch (err) {
       console.log(err);
@@ -77,23 +78,28 @@ export class postController {
     res.render("posts/create", {
       pageTitle: "createPost",
       message: req.flash("success_msg"),
-      error: req.flash("error"),
+      error: req.flash("error")
     });
   }
 
-  public static store(
-    req: {
-      body: any;
-      user: { id: any };
-      flash: (arg0: string, arg1: string) => void;
-    },
-    res: any
-  ) {
+  public static store(req: any, res: any) {
+    const thumbnail = req.files ? req.files.thumbnail : {};
+    const fileName = `${shortId.generate()}_${thumbnail.name}`;
+    const uploadPath = `${appRoot}/public/uploads/thumbnails/${fileName}`;
     try {
+      req.body = { ...req.body, thumbnail };
       schemaPost
         .validate(req.body, { abortEarly: false })
         .then(async () => {
-          await Blog.create({ ...req.body, user: req.user.id });
+          await sharp(thumbnail.data)
+            .jpeg({ quality: 60 })
+            .toFile(uploadPath)
+            .catch((err) => console.log(err));
+          await Blog.create({
+            ...req.body,
+            user: req.user.id,
+            thumbnail: fileName
+          });
           req.flash("success_msg", "post created!");
           res.redirect("/admin");
         })
@@ -115,7 +121,7 @@ export class postController {
       limits: { fileSize: 4000000 },
       // dest: "uploads/",
       // storage: storage,
-      fileFilter: fileFilter,
+      fileFilter: fileFilter
     }).single("image");
     //req.file
     // console.log(req.file)
@@ -133,7 +139,7 @@ export class postController {
           const fileName = `${shortId.generate()}_${req.file.originalname}`;
           await sharp(req.file.buffer)
             .jpeg({
-              quality: 60,
+              quality: 60
             })
             .toFile(`./public/uploads/${fileName}`)
             .catch((err) => console.log(err));
@@ -148,7 +154,7 @@ export class postController {
 
   public static async edit(req: any, res: any) {
     const post = await Blog.findOne({
-      _id: req.params.id,
+      _id: req.params.id
     });
 
     if (!post) {
@@ -162,7 +168,7 @@ export class postController {
         pageTitle: "editPost",
         message: req.flash("success_msg"),
         error: req.flash("error"),
-        post,
+        post
       });
     }
   }
@@ -214,7 +220,7 @@ export class postController {
     res: { redirect: (arg0: string) => void }
   ) {
     const post = await Blog.findOne({
-      _id: req.params.id,
+      _id: req.params.id
     });
     if (post) {
       const result = await Blog.findByIdAndRemove(req.params.id);

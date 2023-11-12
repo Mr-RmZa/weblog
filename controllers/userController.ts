@@ -3,9 +3,9 @@ import bcrypt from "bcryptjs";
 import passport from "passport";
 import { User } from "../models/User";
 import { Blog } from "../models/Blog";
+import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
 import { schemaUser } from "../models/secure/userValidation";
-import { truncate } from "../utils/helpers";
 
 export class userController {
   public static async dashboard(
@@ -36,9 +36,12 @@ export class userController {
     const postPerPage = 2;
     try {
       const numberOfPosts = await Blog.find({
-        user: req.user._id,
+        user: req.user._id
       }).countDocuments();
       const blogs = await Blog.find({ user: req.user.id })
+        .sort({
+          createdAt: "desc"
+        })
         .skip((page - 1) * postPerPage)
         .limit(postPerPage);
       res.render("users/index", {
@@ -54,7 +57,7 @@ export class userController {
         hasNextPage: postPerPage * page < numberOfPosts,
         hasPreviousPage: page > 1,
         lastPage: Math.ceil(numberOfPosts / postPerPage),
-        truncate,
+        truncate
       });
     } catch (error) {
       console.log(error);
@@ -74,7 +77,7 @@ export class userController {
     res.render("users/login", {
       pageTitle: "Login",
       message: req.flash("success_msg"),
-      error: req.flash("error"),
+      error: req.flash("error")
     });
   }
 
@@ -90,7 +93,7 @@ export class userController {
     res.render("users/register", {
       pageTitle: "Register",
       message: req.flash("success_msg"),
-      error: req.flash("error"),
+      error: req.flash("error")
     });
   }
 
@@ -108,7 +111,7 @@ export class userController {
       if (response.data.success) {
         passport.authenticate("local", {
           failureRedirect: "/admin/login",
-          failureFlash: true,
+          failureFlash: true
         })(req, res, next);
       } else {
         req.flash("error", "recaptcha error");
@@ -175,7 +178,7 @@ export class userController {
             await User.create({
               fullname,
               email,
-              password: res,
+              password: res
             });
           });
 

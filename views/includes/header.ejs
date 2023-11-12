@@ -70,12 +70,15 @@
             </li>
           </ul>
           <form class="d-flex" role="search">
-            <input
-              class="form-control me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
+            <div class="form-floating">
+              <input
+                type="search"
+                class="form-control form-control-sm me-2 text-dark"
+                id="Search"
+                placeholder="Search"
+              />
+              <label for="Search" class="text-muted">Search</label>
+            </div>
             <button class="btn btn-outline-primary" type="submit">
               Search
             </button>

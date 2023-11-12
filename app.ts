@@ -10,9 +10,13 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import { log } from "console-log-colors";
 import { routerBlog } from "./routes/blog";
+import fileUpload from "express-fileupload";
+import { routerError } from "./routes/error";
 import { routerAdmin } from "./routes/admin";
 import { morganStream } from "./config/winston";
 import { errorController } from "./controllers/errorController";
+
+const app = express();
 
 // env
 dotenv.config({ path: "./config/config.env" });
@@ -22,9 +26,6 @@ connect.mongodb();
 
 // passport configuration
 import "./config/passport";
-import { routerError } from "./routes/error";
-
-const app = express();
 
 // show requests
 app.use(morgan("combined", { stream: morganStream }));
@@ -32,9 +33,12 @@ app.use(morgan("combined", { stream: morganStream }));
 // views
 app.set("view engine", "ejs");
 
-//Parse data
+// parse data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// file upload middleware
+app.use(fileUpload());
 
 // session
 app.use(

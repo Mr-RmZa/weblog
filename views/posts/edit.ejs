@@ -3,17 +3,19 @@
   <%- include('../includes/massage') %>
   <form action="/blog/edit/<%= post._id %>" method="post">
     <div class="mb-3">
-      <label for="exampleInputTitle1" class="form-label">Title</label>
-      <input
-        type="text"
-        class="form-control"
-        id="exampleInputTitle1"
-        aria-describedby="titleHelp"
-        name="title"
-        placeholder="title"
-        required
-        value="<%= post.title %>"
-      />
+      <div class="form-floating">
+        <input
+          type="search"
+          class="form-control me-2 text-dark"
+          id="exampleInputTitle1"
+          placeholder="title"
+          name="title"
+          placeholder="title"
+          required
+          value="<%= post.title %>"
+        />
+        <label for="exampleInputTitle1" class="text-muted">Title</label>
+      </div>
     </div>
     <div class="mb-3">
       <label for="exampleFormControlTextarea1" class="form-label"
@@ -25,36 +27,22 @@
         name="body"
         rows="3"
         required
-      ><%= post.body %></textarea>
+      >
+<%= post.body %></textarea
+      >
     </div>
     <div class="mb-3">
       <label class="form-label">Status</label>
       <div class="form-check">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="status"
-          id="status1"
-          value="public"
-          required
-          <% if (post.status === "public") { %>
-            checked
-          <% } %>
-        />
+        <input class="form-check-input" type="radio" name="status" id="status1"
+        value="public" required <% if (post.status === "public") { %> checked <%
+        } %> />
         <label class="form-check-label" for="status1"> public </label>
       </div>
       <div class="form-check">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="status"
-          id="status2"
-          value="private"
-          required
-          <% if (post.status === "private") { %>
-            checked
-          <% } %>
-        />
+        <input class="form-check-input" type="radio" name="status" id="status2"
+        value="private" required <% if (post.status === "private") { %> checked
+        <% } %> />
         <label class="form-check-label" for="status2"> privet </label>
       </div>
     </div>

@@ -20,12 +20,12 @@ export class postController {
 
     try {
       const numberOfPosts = await Blog.find({
-        status: "public"
+        status: "public",
       }).countDocuments();
 
       const posts = await Blog.find({ status: "public" })
         .sort({
-          createdAt: "desc"
+          createdAt: "desc",
         })
         .skip((page - 1) * postPerPage)
         .limit(postPerPage);
@@ -42,7 +42,7 @@ export class postController {
         previousPage: page - 1,
         hasNextPage: postPerPage * page < numberOfPosts,
         hasPreviousPage: page > 1,
-        lastPage: Math.ceil(numberOfPosts / postPerPage)
+        lastPage: Math.ceil(numberOfPosts / postPerPage),
         // auth
       });
     } catch (err) {
@@ -62,7 +62,7 @@ export class postController {
         post,
         message: req.flash("success_msg"),
         error: req.flash("error"),
-        formatDate
+        formatDate,
       });
     } catch (err) {
       console.log(err);
@@ -82,7 +82,7 @@ export class postController {
     res.render("posts/create", {
       pageTitle: "createPost",
       message: req.flash("success_msg"),
-      error: req.flash("error")
+      error: req.flash("error"),
     });
   }
 
@@ -102,7 +102,7 @@ export class postController {
           await Blog.create({
             ...req.body,
             user: req.user.id,
-            thumbnail: fileName
+            thumbnail: fileName,
           });
           req.flash("success_msg", "post created!");
           res.redirect("/admin");
@@ -123,7 +123,7 @@ export class postController {
   ) {
     const upload = multer({
       limits: { fileSize: 4000000 },
-      fileFilter: fileFilter
+      fileFilter: fileFilter,
     }).single("image");
 
     upload(req, res, async (err) => {
@@ -141,7 +141,7 @@ export class postController {
           const fileName = `${shortId.generate()}_${req.file.originalname}`;
           await sharp(req.file.buffer)
             .jpeg({
-              quality: 60
+              quality: 60,
             })
             .toFile(`./public/uploads/${fileName}`)
             .catch((err) => console.log(err));
@@ -155,7 +155,7 @@ export class postController {
 
   public static async edit(req: any, res: any) {
     const post = await Blog.findOne({
-      _id: req.params.id
+      _id: req.params.id,
     });
 
     if (!post) {
@@ -169,78 +169,69 @@ export class postController {
         pageTitle: "editPost",
         message: req.flash("success_msg"),
         error: req.flash("error"),
-        post
+        post,
       });
     }
   }
 
-  public static async update(
-    req: {
-      files: { thumbnail: any };
-      params: { id: any };
-      body: { title: any; status: any; body: any };
-      user: { _id: string };
-      flash: (arg0: string, arg1: string) => void;
-    },
-    res: any
-  ) {
+  public static async update(req: any, res: any) {
     const thumbnail = req.files ? req.files.thumbnail : {};
     const fileName = `${shortId.generate()}_${thumbnail.name}`;
     const uploadPath = `${appRoot}/public/uploads/thumbnails/${fileName}`;
     const post = await Blog.findOne({ _id: req.params.id });
     try {
-      if (thumbnail.name)
-        schemaPost.validate({ ...req.body, thumbnail }, { abortEarly: false });
-      else
-        schemaPost
-          .validate(
-            {
-              ...req.body,
-              thumbnail: {
-                name: "placeholder",
-                size: 0,
-                mimetype: "image/jpeg"
-              }
-            },
-            { abortEarly: false }
-          )
-          .then(async () => {
-            if (!post) {
-              return res.redirect("errors/404");
-            }
+      if (thumbnail.name) {
+        req.body = { ...req.body, thumbnail };
+      } else {
+        req.body = {
+          ...req.body,
+          thumbnail: {
+            name: "placeholder",
+            size: 0,
+            mimetype: "image/jpeg",
+          },
+        };
+      }
+      schemaPost
+        .validate(req.body, { abortEarly: false })
+        .then(async () => {
+          if (!post) {
+            return res.redirect("errors/404");
+          }
 
-            if (post.user!.toString() != req.user._id) {
-              return res.redirect("/dashboard");
-            } else {
-              if (thumbnail.name) {
-                fs.unlink(
-                  `${appRoot}/public/uploads/thumbnails/${post.thumbnail}`,
-                  async (err: any) => {
-                    if (err) console.log(err);
-                    else {
-                      await sharp(thumbnail.data)
-                        .jpeg({ quality: 60 })
-                        .toFile(uploadPath)
-                        .catch((err) => console.log(err));
-                    }
+          if (post.user!.toString() != req.user._id) {
+            return res.redirect("/dashboard");
+          } else {
+            if (thumbnail.name) {
+              fs.unlink(
+                `${appRoot}/public/uploads/thumbnails/${post.thumbnail}`,
+                async (err: any) => {
+                  if (err) console.log(err);
+                  else {
+                    await sharp(thumbnail.data)
+                      .jpeg({ quality: 60 })
+                      .toFile(uploadPath)
+                      .catch((err) => console.log(err));
                   }
-                );
-              }
-
-              const { title, status, body } = req.body;
-              post.title = title;
-              post.status = status;
-              post.body = body;
-
-              await post.save();
-              req.flash("success_msg", "post edited!");
-              res.redirect("/admin");
+                }
+              );
             }
-          })
-          .catch((err: { errors: any }) => {
-            req.flash("error", err.errors);
-            res.redirect(`/blog/edit/${req.params.id}`);
-          });
+
+            const { title, status, body } = req.body;
+            post.title = title;
+            post.status = status;
+            post.body = body;
+            post.thumbnail = thumbnail.name ? fileName : post.thumbnail;
+
+            await post.save();
+            req.flash("success_msg", "post edited!");
+            res.redirect("/admin");
+          }
+        })
+        .catch((err: { errors: any }) => {
+          req.flash("error", err.errors);
+          res.redirect(`/blog/edit/${req.params.id}`);
+        });
     } catch (error) {
       console.log(error);
       res.redirect("/error/500");
@@ -252,7 +243,7 @@ export class postController {
     res: { redirect: (arg0: string) => void }
   ) {
     const post = await Blog.findOne({
-      _id: req.params.id
+      _id: req.params.id,
     });
     if (post) {
       const result = await Blog.findByIdAndRemove(req.params.id);

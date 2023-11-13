@@ -1,7 +1,7 @@
 <%- include('../includes/header') %>
 <div class="container">
   <%- include('../includes/massage') %>
-  <form action="/blog/edit/<%= post._id %>" method="post">
+  <form action="/blog/edit/<%= post._id %>" method="post" enctype="multipart/form-data">
     <div class="mb-5">
       <label for="thumbnail" class="form-label">thumbnail</label>
       <input class="form-control" type="file" id="thumbnail" name="thumbnail" />

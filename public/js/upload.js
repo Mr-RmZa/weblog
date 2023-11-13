@@ -2,10 +2,10 @@ document.getElementById("imageUpload").onclick = function () {
   let xhttp = new XMLHttpRequest(); // create new AJAX request
 
   const selectedImage = document.getElementById("selectedImage");
-  const uploadResult = document.getElementById("uploadResult");
   const imageStatus = document.getElementById("imageStatus");
   const progressDiv = document.getElementById("progressDiv");
   const progressBar = document.getElementById("progressBar");
+  const uploadResult = document.getElementById("uploadResult");
 
   // xhttp.responseType = "json";
 

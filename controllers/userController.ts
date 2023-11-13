@@ -33,7 +33,7 @@ export class userController {
     }
   ) {
     const page = +req.query.page || 1;
-    const postPerPage = 2;
+    const postPerPage = 5;
     try {
       const numberOfPosts = await Blog.find({
         user: req.user._id

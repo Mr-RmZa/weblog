@@ -8,7 +8,8 @@
   <div class="row">
     <%- include('../includes/massage') %>
     <div class="col">
-      <h1>Last Post</h1>
+      <h1 class="d-inline-block">Last Post</h1>
+      <a class="btn btn-success d-inline-block float-end" href="/blog/create">add post</a>
       <table
         class="table table-dark table-striped table-hover table-bordered border-primary table-sm text-center"
       >
@@ -40,21 +41,9 @@
             <% } %>
         </tbody>
       </table>
-      <%- include("../includes/pagination.ejs") %>
-    </div>
-    <div class="col text-end">
-      <h1>Last Post</h1>
-      <div class="list-group">
-        <a href="#" class="list-group-item list-group-item-action"
-          >A second link item</a
-        >
-        <a href="#" class="list-group-item list-group-item-action"
-          >A third link item</a
-        >
-        <a href="#" class="list-group-item list-group-item-action"
-          >A fourth link item</a
-        >
-      </div>
+      <% if (blogs.length) { %>
+       <%- include("../includes/pagination.ejs") %>
+      <% } %>
     </div>
   </div>
 </div>

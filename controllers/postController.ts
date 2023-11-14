@@ -20,12 +20,12 @@ export class postController {
 
     try {
       const numberOfPosts = await Blog.find({
-        status: "public",
+        status: "public"
       }).countDocuments();
 
       const posts = await Blog.find({ status: "public" })
         .sort({
-          createdAt: "desc",
+          createdAt: "desc"
         })
         .skip((page - 1) * postPerPage)
         .limit(postPerPage);
@@ -42,7 +42,7 @@ export class postController {
         previousPage: page - 1,
         hasNextPage: postPerPage * page < numberOfPosts,
         hasPreviousPage: page > 1,
-        lastPage: Math.ceil(numberOfPosts / postPerPage),
+        lastPage: Math.ceil(numberOfPosts / postPerPage)
         // auth
       });
     } catch (err) {
@@ -62,7 +62,7 @@ export class postController {
         post,
         message: req.flash("success_msg"),
         error: req.flash("error"),
-        formatDate,
+        formatDate
       });
     } catch (err) {
       console.log(err);
@@ -82,7 +82,7 @@ export class postController {
     res.render("posts/create", {
       pageTitle: "createPost",
       message: req.flash("success_msg"),
-      error: req.flash("error"),
+      error: req.flash("error")
     });
   }
 
@@ -102,7 +102,7 @@ export class postController {
           await Blog.create({
             ...req.body,
             user: req.user.id,
-            thumbnail: fileName,
+            thumbnail: fileName
           });
           req.flash("success_msg", "post created!");
           res.redirect("/admin");
@@ -123,7 +123,7 @@ export class postController {
   ) {
     const upload = multer({
       limits: { fileSize: 4000000 },
-      fileFilter: fileFilter,
+      fileFilter: fileFilter
     }).single("image");
 
     upload(req, res, async (err) => {
@@ -141,7 +141,7 @@ export class postController {
           const fileName = `${shortId.generate()}_${req.file.originalname}`;
           await sharp(req.file.buffer)
             .jpeg({
-              quality: 60,
+              quality: 60
             })
             .toFile(`./public/uploads/${fileName}`)
             .catch((err) => console.log(err));
@@ -155,7 +155,7 @@ export class postController {
 
   public static async edit(req: any, res: any) {
     const post = await Blog.findOne({
-      _id: req.params.id,
+      _id: req.params.id
     });
 
     if (!post) {
@@ -169,7 +169,7 @@ export class postController {
         pageTitle: "editPost",
         message: req.flash("success_msg"),
         error: req.flash("error"),
-        post,
+        post
       });
     }
   }
@@ -188,8 +188,8 @@ export class postController {
           thumbnail: {
             name: "placeholder",
             size: 0,
-            mimetype: "image/jpeg",
-          },
+            mimetype: "image/jpeg"
+          }
         };
       }
       schemaPost
@@ -243,7 +243,7 @@ export class postController {
     res: { redirect: (arg0: string) => void }
   ) {
     const post = await Blog.findOne({
-      _id: req.params.id,
+      _id: req.params.id
     });
     if (post) {
       const result = await Blog.findByIdAndRemove(req.params.id);

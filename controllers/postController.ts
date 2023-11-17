@@ -248,6 +248,12 @@ export class postController {
     if (post) {
       const result = await Blog.findByIdAndRemove(req.params.id);
       console.log(result);
+      fs.unlink(
+        `${appRoot}/public/uploads/thumbnails/${post.thumbnail}`,
+        (err: any) => {
+          if (err) console.log(err);
+        }
+      );
       req.flash("success_msg", "post deleted!");
       res.redirect("/admin");
     } else {

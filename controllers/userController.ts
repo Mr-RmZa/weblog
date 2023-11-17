@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import passport from "passport";
 import { User } from "../models/User";
 import { Blog } from "../models/Blog";
+import { sendEmail } from "../utils/mailer";
 import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
 import { schemaUser } from "../models/secure/userValidation";
@@ -181,6 +182,14 @@ export class userController {
               password: res
             });
           });
+
+          //? Send Welcome Email
+          sendEmail(
+            email,
+            fullname,
+            "خوش آمدی به وبلاگ ما",
+            "خیلی خوشحالیم که به جمع ما وبلاگرهای خفن ملحق شدی"
+          );
 
           req.flash("success_msg", "register successfully!");
           res.redirect("/admin/login");

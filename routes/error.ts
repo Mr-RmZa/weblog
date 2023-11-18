@@ -1,9 +1,8 @@
 import { Router } from "express";
+import { errorController } from "../controllers/errorController";
 
 export const routerError = Router();
 
-routerError.get("/500", (req, res) => {
-  res.render("errors/500", {
-    pageTitle: "500 | server"
-  });
-});
+routerError.get("/404", errorController[404]);
+
+routerError.get("/500", errorController[500]);

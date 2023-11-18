@@ -47,7 +47,7 @@ app.use(
     unset: "destroy",
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET!,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI })
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
   })
 );
 

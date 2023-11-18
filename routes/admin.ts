@@ -18,4 +18,8 @@ routerAdmin.get("/logout", auth.authenticated, userController.logout);
 
 routerAdmin.get("/register", userController.register);
 
-routerAdmin.post("/register", userController.createUser);
+routerAdmin.post(
+  "/register",
+  userController.handleLogin,
+  userController.createUser
+);

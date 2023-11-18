@@ -6,42 +6,27 @@ import { Blog } from "../models/Blog";
 import { sendEmail } from "../utils/mailer";
 import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
+import { errorController } from "./errorController";
 import { schemaUser } from "../models/secure/userValidation";
 
 export class userController {
   public static async dashboard(
-    req: any,
-    res: {
-      redirect(arg0: string): unknown;
-      render: (
-        arg0: string,
-        arg1: {
-          pageTitle: string;
-          message: any;
-          error: any;
-          name: string;
-          blogs: any;
-          formatDate: any;
-          currentPage: number;
-          nextPage: number;
-          previousPage: number;
-          hasNextPage: boolean;
-          hasPreviousPage: boolean;
-          lastPage: number;
-          truncate: (str: string, len: number) => string;
-        }
-      ) => void;
-    }
+    req: {
+      query: { page: string | number };
+      user: { _id: any; id: any; fullname: any };
+      flash: (arg0: string) => any;
+    },
+    res: any
   ) {
-    const page = +req.query.page || 1;
-    const postPerPage = 5;
     try {
+      const page = +req.query.page || 1;
+      const postPerPage = 5;
       const numberOfPosts = await Blog.find({
-        user: req.user._id
+        user: req.user._id,
       }).countDocuments();
       const blogs = await Blog.find({ user: req.user.id })
         .sort({
-          createdAt: "desc"
+          createdAt: "desc",
         })
         .skip((page - 1) * postPerPage)
         .limit(postPerPage);
@@ -58,69 +43,77 @@ export class userController {
         hasNextPage: postPerPage * page < numberOfPosts,
         hasPreviousPage: page > 1,
         lastPage: Math.ceil(numberOfPosts / postPerPage),
-        truncate
+        truncate,
       });
     } catch (error) {
       console.log(error);
-      res.redirect("/error/500");
+      errorController[500]("", res);
     }
   }
 
   public static login(
     req: { flash: (arg0: string) => any },
-    res: {
-      render: (
-        arg0: string,
-        arg1: { pageTitle: string; message: any; error: any }
-      ) => void;
-    }
+    res: { render: any }
   ) {
-    res.render("users/login", {
-      pageTitle: "Login",
-      message: req.flash("success_msg"),
-      error: req.flash("error")
-    });
+    try {
+      res.render("users/login", {
+        pageTitle: "Login",
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+      });
+    } catch (error) {
+      console.log(error);
+      errorController[500]("", res);
+    }
   }
 
   public static register(
     req: { flash: (arg0: string) => any },
-    res: {
-      render: (
-        arg0: string,
-        arg1: { pageTitle: string; message: any; error: any }
-      ) => void;
-    }
+    res: { render: any }
   ) {
-    res.render("users/register", {
-      pageTitle: "Register",
-      message: req.flash("success_msg"),
-      error: req.flash("error")
-    });
+    try {
+      res.render("users/register", {
+        pageTitle: "Register",
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+      });
+    } catch (error) {
+      console.log(error);
+      errorController[500]("", res);
+    }
   }
 
-  public static async handleLogin(req: any, res: any, next: any) {
+  public static async handleLogin(
+    req: {
+      body: { [x: string]: any };
+      connection: { remoteAddress: any };
+      flash: (arg0: string, arg1: string) => void;
+      originalUrl: string;
+    },
+    res: any,
+    next: any
+  ) {
     try {
       const GRR = req.body["g-recaptcha-response"];
-      if (!GRR) {
-        req.flash("error", "recaptcha is required");
-        return res.redirect("/admin/login");
-      }
-
-      const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA}&response=${GRR}&remoteip=${req.connection.remoteAddress}`;
-      const response = await axios.post(verifyUrl);
-
-      if (response.data.success) {
-        passport.authenticate("local", {
-          failureRedirect: "/admin/login",
-          failureFlash: true
-        })(req, res, next);
+      if (GRR) {
+        const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA}&response=${GRR}&remoteip=${req.connection.remoteAddress}`;
+        const response = await axios.post(verifyUrl);
+        if (response.data.success) {
+          passport.authenticate("local", {
+            failureRedirect: req.originalUrl,
+            failureFlash: true,
+          })(req, res, next);
+        } else {
+          req.flash("error", "recaptcha error");
+          res.redirect(req.originalUrl);
+        }
       } else {
-        req.flash("error", "recaptcha error");
-        res.redirect("/admin/login");
+        req.flash("error", "recaptcha is required");
+        res.redirect(req.originalUrl);
       }
     } catch (error) {
       console.log(error);
-      res.redirect("/error/500");
+      errorController[500]("", res);
     }
   }
 
@@ -132,13 +125,18 @@ export class userController {
     },
     res: any
   ) {
-    if (req.body.remember) {
-      req.session.cookie.originalMaxAge = 20 * 60 * 60 * 1000; // 1 day or 24 hour
-    } else {
-      req.session.cookie.expires = null;
+    try {
+      if (req.body.remember) {
+        req.session.cookie.originalMaxAge = 20 * 60 * 60 * 1000; // 1 day or 24 hour
+      } else {
+        req.session.cookie.expires = null;
+      }
+      req.flash("success_msg", "login was successfully");
+      res.redirect("/admin");
+    } catch (error) {
+      console.log(error);
+      errorController[500]("", res);
     }
-    req.flash("success_msg", "login was successfully");
-    res.redirect("/admin");
   }
 
   public static logout(
@@ -146,16 +144,21 @@ export class userController {
       logout: (arg0: (err: any) => any) => void;
       flash: (arg0: string, arg1: string) => void;
     },
-    res: { redirect: (arg0: string) => void },
+    res: any,
     next: (arg0: any) => any
   ) {
-    req.logout((err: any) => {
-      if (err) {
-        return next(err);
-      }
-      req.flash("success_msg", "logout was successfully");
-      res.redirect("/");
-    });
+    try {
+      req.logout((err: any) => {
+        if (err) {
+          return next(err);
+        }
+        req.flash("success_msg", "logout was successfully");
+        res.redirect("/");
+      });
+    } catch (error) {
+      console.log(error);
+      errorController[500]("", res);
+    }
   }
 
   public static async createUser(
@@ -163,44 +166,45 @@ export class userController {
       body: { fullname: any; email: any; password: any };
       flash: (arg0: string, arg1: string) => void;
     },
-    res: { redirect: (arg0: string) => void }
+    res: any
   ) {
     try {
       const { fullname, email, password } = req.body;
       const user = await User.findOne({ email });
-      if (user) {
+      if (!user) {
+        schemaUser
+          .validate(req.body, { abortEarly: false })
+          .then(() => {
+            bcrypt.hash(password, 10).then(async (res) => {
+              await User.create({
+                fullname,
+                email,
+                password: res,
+              });
+            });
+
+            //? Send Welcome Email
+            sendEmail(
+              email,
+              fullname,
+              "خوش آمدی به وبلاگ ما",
+              "خیلی خوشحالیم که به جمع ما وبلاگرهای خفن ملحق شدی"
+            );
+
+            req.flash("success_msg", "register successfully!");
+            res.redirect("/admin/login");
+          })
+          .catch((err: { errors: any }) => {
+            req.flash("error", err.errors);
+            res.redirect("/admin/register");
+          });
+      } else {
         req.flash("error", "Duplicate Email!");
         res.redirect("/admin/register");
       }
-      schemaUser
-        .validate(req.body, { abortEarly: false })
-        .then(() => {
-          bcrypt.hash(password, 10).then(async (res) => {
-            await User.create({
-              fullname,
-              email,
-              password: res
-            });
-          });
-
-          //? Send Welcome Email
-          sendEmail(
-            email,
-            fullname,
-            "خوش آمدی به وبلاگ ما",
-            "خیلی خوشحالیم که به جمع ما وبلاگرهای خفن ملحق شدی"
-          );
-
-          req.flash("success_msg", "register successfully!");
-          res.redirect("/admin/login");
-        })
-        .catch((err: { errors: any }) => {
-          req.flash("error", err.errors);
-          res.redirect("/admin/register");
-        });
     } catch (error) {
       console.log(error);
-      res.redirect("/error/500");
+      errorController[500]("", res);
     }
   }
 }

@@ -7,11 +7,11 @@ const transporterDetails = smtpTransport({
   secure: true,
   auth: {
     user: "toplearn@ghorbany.dev",
-    pass: "toplearn123456"
+    pass: "toplearn123456",
   },
   tls: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 export const sendEmail = (
@@ -26,6 +26,6 @@ export const sendEmail = (
     to: email,
     subject: subject,
     html: `<h1> سلام ${fullname}</h1>
-            <p>${message}</p>`
+            <p>${message}</p>`,
   });
 };

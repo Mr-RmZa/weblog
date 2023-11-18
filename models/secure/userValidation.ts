@@ -12,5 +12,5 @@ export const schemaUser = object().shape({
     .max(100, "password maximum 100 character"),
   confirmPassword: string()
     .required("confirm password is required")
-    .oneOf([ref("password")], "password does not match")
+    .oneOf([ref("password")], "password does not match"),
 });

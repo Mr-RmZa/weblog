@@ -62,7 +62,8 @@ export class postController {
           formatDate,
         });
       } else {
-        errorController[404]("", res);
+        req.flash("error", "there is nothing!");
+        res.redirect("/admin");
       }
     } catch (error) {
       console.log(error);
@@ -164,7 +165,7 @@ export class postController {
     req: {
       params: { id: any };
       user: { _id: string };
-      flash: (arg0: string) => any;
+      flash: (arg0: string, arg1?: string | undefined) => void;
     },
     res: any
   ) {
@@ -181,10 +182,12 @@ export class postController {
             post,
           });
         } else {
+          req.flash("error", "there is nothing!");
           res.redirect("/admin");
         }
       } else {
-        res.render("index");
+        req.flash("error", "there is nothing!");
+        res.redirect("/admin");
       }
     } catch (error) {
       console.log(error);
@@ -249,9 +252,11 @@ export class postController {
               req.flash("success_msg", "post edited!");
               res.redirect("/admin");
             } else {
-              res.redirect("/dashboard");
+              req.flash("error", "there is nothing!");
+              res.redirect("/admin");
             }
           } else {
+            req.flash("error", "there is nothing!");
             res.redirect("/admin");
           }
         })
@@ -282,6 +287,7 @@ export class postController {
         req.flash("success_msg", "post deleted!");
         res.redirect("/admin");
       } else {
+        req.flash("error", "there is nothing!");
         res.redirect("/admin");
       }
     } catch (error) {

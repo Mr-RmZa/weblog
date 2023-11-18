@@ -7,7 +7,7 @@ export const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     cb(null, `${uuidv4()}_${file.originalname}`);
-  }
+  },
 });
 
 export const fileFilter = (

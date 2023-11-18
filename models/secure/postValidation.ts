@@ -16,6 +16,6 @@ export const schemaPost = object().shape({
     mimetype: mixed().oneOf(
       ["image/jpeg", "image/png"],
       "Only png and jpeg extensions are supported"
-    )
-  })
+    ),
+  }),
 });

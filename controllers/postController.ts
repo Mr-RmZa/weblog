@@ -8,7 +8,6 @@ import { Request, Response } from "express";
 import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
 import { fileFilter } from "../utils/multer";
-import { errorController } from "./errorController";
 import { schemaPost } from "../models/secure/postValidation";
 
 export class postController {
@@ -31,7 +30,7 @@ export class postController {
         .skip((page - 1) * postPerPage)
         .limit(postPerPage);
 
-      res.render("index", {
+      return res.render("index", {
         pageTitle: "weblog",
         message: req.flash("success_msg"),
         error: req.flash("error"),
@@ -48,7 +47,7 @@ export class postController {
       });
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -56,31 +55,31 @@ export class postController {
     try {
       const post = await Blog.findOne({ _id: req.params.id }).populate("user");
       if (post) {
-        res.render("posts/show", {
+        return res.render("posts/show", {
           pageTitle: post.title,
           post,
           formatDate,
         });
       } else {
         req.flash("error", "there is nothing!");
-        res.redirect("/admin");
+        return res.redirect("/");
       }
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
   public static create(req: Request, res: Response) {
     try {
-      res.render("posts/create", {
+      return res.render("posts/create", {
         pageTitle: "createPost",
         message: req.flash("success_msg"),
         error: req.flash("error"),
       });
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -111,15 +110,15 @@ export class postController {
             thumbnail: fileName,
           });
           req.flash("success_msg", "post created!");
-          res.redirect("/admin");
+          return res.redirect("/admin");
         })
         .catch((err: { errors: string }) => {
           req.flash("error", err.errors);
-          res.redirect("/blog/create");
+          return res.redirect("/blog/create");
         });
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -139,7 +138,7 @@ export class postController {
           }
           console.log(err);
 
-          res.status(400).send(err);
+          return res.status(400).send(err);
         } else {
           if (req.file) {
             const fileName = `${shortId.generate()}_${req.file.originalname}`;
@@ -149,15 +148,17 @@ export class postController {
               })
               .toFile(`./public/uploads/${fileName}`)
               .catch((err) => console.log(err));
-            res.status(200).send(`http://localhost:3000/uploads/${fileName}`);
+            return res
+              .status(200)
+              .send(`http://localhost:3000/uploads/${fileName}`);
           } else {
-            res.send("You must select a photo to upload");
+            return res.send("You must select a photo to upload");
           }
         }
       });
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -175,7 +176,7 @@ export class postController {
       });
       if (post) {
         if (post.user!.toString() == req.user._id) {
-          res.render("posts/edit", {
+          return res.render("posts/edit", {
             pageTitle: "editPost",
             message: req.flash("success_msg"),
             error: req.flash("error"),
@@ -183,15 +184,15 @@ export class postController {
           });
         } else {
           req.flash("error", "there is nothing!");
-          res.redirect("/admin");
+          return res.redirect("/admin");
         }
       } else {
         req.flash("error", "there is nothing!");
-        res.redirect("/admin");
+        return res.redirect("/admin");
       }
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -250,23 +251,23 @@ export class postController {
 
               await post.save();
               req.flash("success_msg", "post edited!");
-              res.redirect("/admin");
+              return res.redirect("/admin");
             } else {
               req.flash("error", "there is nothing!");
-              res.redirect("/admin");
+              return res.redirect("/admin");
             }
           } else {
             req.flash("error", "there is nothing!");
-            res.redirect("/admin");
+            return res.redirect("/admin");
           }
         })
         .catch((err) => {
           req.flash("error", err.errors);
-          res.redirect(`/blog/edit/${req.params.id}`);
+          return res.redirect(`/blog/edit/${req.params.id}`);
         });
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -285,14 +286,14 @@ export class postController {
           }
         );
         req.flash("success_msg", "post deleted!");
-        res.redirect("/admin");
+        return res.redirect("/admin");
       } else {
         req.flash("error", "there is nothing!");
-        res.redirect("/admin");
+        return res.redirect("/admin");
       }
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 }

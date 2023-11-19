@@ -1,0 +1,44 @@
+<%- include('../includes/header') %>
+<div class="container">
+  <%- include('../includes/massage') %>
+  <form
+    id="loginForm"
+    class="form-signin"
+    action="/admin/resetPassword/<%= userId %>"
+    method="POST"
+  >
+    <h1 class="h3 mb-3 font-weight-normal text-center">change Password</h1>
+
+    <div class="mb-3">
+      <label for="inputEmail" class="form-label sr-only">Password</label>
+      <input
+        type="password"
+        name="password"
+        id="inputPassword"
+        class="form-control mb-2"
+        placeholder="password"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="inputConfirmPassword" class="form-label sr-only"
+        >Repeat Password</label
+      >
+      <input
+        type="password"
+        name="confirmPassword"
+        id="inputConfirmPassword"
+        class="form-control mb-2"
+        placeholder="repeat password"
+        required
+      />
+    </div>
+    <div class="d-grid gap-2">
+      <button type="submit" class="btn btn btn-outline-primary btn-block">
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
+<%- include('../includes/footer') %>

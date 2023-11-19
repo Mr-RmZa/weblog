@@ -23,3 +23,11 @@ routerAdmin.post(
   userController.handleLogin,
   userController.createUser
 );
+
+routerAdmin.get("/forgetPassword", userController.forgetPassword);
+
+routerAdmin.post("/forgetPassword", userController.handleForgetPassword);
+
+routerAdmin.get("/resetPassword/:token", userController.resetPassword);
+
+routerAdmin.post("/resetPassword/:id", userController.handleResetPassword);

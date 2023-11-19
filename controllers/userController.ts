@@ -6,7 +6,7 @@ import { Blog } from "../models/Blog";
 import { sendEmail } from "../utils/mailer";
 import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
-import { errorController } from "./errorController";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { schemaUser } from "../models/secure/userValidation";
 
 export class userController {
@@ -30,7 +30,7 @@ export class userController {
         })
         .skip((page - 1) * postPerPage)
         .limit(postPerPage);
-      res.render("users/index", {
+      return res.render("users/index", {
         pageTitle: "Dashboard",
         message: req.flash("success_msg"),
         error: req.flash("error"),
@@ -47,39 +47,51 @@ export class userController {
       });
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
   public static login(
     req: { flash: (arg0: string) => any },
-    res: { render: any }
+    res: {
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; message: any; error: any }
+      ) => void;
+      redirect: (arg0: string) => void;
+    }
   ) {
     try {
-      res.render("users/login", {
+      return res.render("users/login", {
         pageTitle: "Login",
         message: req.flash("success_msg"),
         error: req.flash("error"),
       });
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
   public static register(
     req: { flash: (arg0: string) => any },
-    res: { render: any }
+    res: {
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; message: any; error: any }
+      ) => void;
+      redirect: (arg0: string) => void;
+    }
   ) {
     try {
-      res.render("users/register", {
+      return res.render("users/register", {
         pageTitle: "Register",
         message: req.flash("success_msg"),
         error: req.flash("error"),
       });
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -105,15 +117,15 @@ export class userController {
           })(req, res, next);
         } else {
           req.flash("error", "recaptcha error");
-          res.redirect(req.originalUrl);
+          return res.redirect(req.originalUrl);
         }
       } else {
         req.flash("error", "recaptcha is required");
-        res.redirect(req.originalUrl);
+        return res.redirect(req.originalUrl);
       }
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -132,10 +144,10 @@ export class userController {
         req.session.cookie.expires = null;
       }
       req.flash("success_msg", "login was successfully");
-      res.redirect("/admin");
+      return res.redirect("/admin");
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -153,11 +165,11 @@ export class userController {
           return next(err);
         }
         req.flash("success_msg", "logout was successfully");
-        res.redirect("/");
+        return res.redirect("/");
       });
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
     }
   }
 
@@ -192,19 +204,162 @@ export class userController {
             );
 
             req.flash("success_msg", "register successfully!");
-            res.redirect("/admin/login");
+            return res.redirect("/admin/login");
           })
           .catch((err: { errors: any }) => {
             req.flash("error", err.errors);
-            res.redirect("/admin/register");
+            return res.redirect("/admin/register");
           });
       } else {
         req.flash("error", "Duplicate Email!");
-        res.redirect("/admin/register");
+        return res.redirect("/admin/register");
       }
     } catch (error) {
       console.log(error);
-      errorController[500]("", res);
+      return res.redirect("/error/500");
+    }
+  }
+
+  public static forgetPassword(
+    req: { flash: (arg0: string) => any },
+    res: {
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; message: any; error: any }
+      ) => void;
+      redirect: (arg0: string) => void;
+    }
+  ) {
+    try {
+      return res.render("users/forgetPass", {
+        pageTitle: "Forget Password",
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+      });
+    } catch (error) {
+      console.log(error);
+      return res.redirect("/error/500");
+    }
+  }
+
+  public static async handleForgetPassword(
+    req: { body: { email: any }; flash: (arg0: string, arg1: string) => void },
+    res: any
+  ) {
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ email: email });
+      if (user) {
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
+          expiresIn: "1h",
+        });
+        const resetLink = `http://localhost:3000/admin/resetPassword/${token}`;
+        console.log(resetLink);
+
+        sendEmail(
+          user.email!,
+          user.fullname!,
+          "فراموشی رمز عبور",
+          `جهت تغییر رمز عبور فعلی رو لینک زیر کلیک کنید
+          <a href="${resetLink}">لینک تغییر رمز عبور</a>`
+        );
+        req.flash(
+          "success_msg",
+          "The email containing the link has been sent successfully"
+        );
+        return res.redirect("/admin/forgetPassword");
+      } else {
+        req.flash("error", "User with email is not registered in the database");
+        return res.redirect("/admin/forgetPassword");
+      }
+    } catch (error) {
+      console.log(error);
+      return res.redirect("/error/500");
+    }
+  }
+
+  public static resetPassword(
+    req: { params: { token: any }; flash: (arg0: string) => any },
+    res: {
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; message: any; error: any; userId: any }
+      ) => void;
+      redirect: (arg0: string) => void;
+    }
+  ) {
+    try {
+      const token = req.params.token;
+
+      let decodedToken;
+
+      try {
+        decodedToken = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+        console.log(decodedToken);
+      } catch (err) {
+        console.log(err);
+        if (!decodedToken) {
+          return res.redirect("/error/404");
+        }
+      }
+      return res.render("users/resetPass", {
+        pageTitle: "Change Password",
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+        userId: decodedToken.userId,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.redirect("/error/500");
+    }
+  }
+
+  public static async handleResetPassword(
+    req: {
+      body: { password: any; confirmPassword: any };
+      params: { id: any };
+      flash: (arg0: string, arg1?: string | undefined) => void;
+    },
+    res: {
+      redirect: (arg0: string) => any;
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; message: any; error: any; userId: any }
+      ) => any;
+    }
+  ) {
+    try {
+      const { password, confirmPassword } = req.body;
+      console.log(password, confirmPassword);
+
+      if (password === confirmPassword) {
+        const user = await User.findOne({ _id: req.params.id });
+
+        if (user) {
+          user.password = password;
+          await user.save();
+
+          req.flash(
+            "success_msg",
+            "Your password has been successfully updated"
+          );
+          return res.redirect("/admin/login");
+        } else {
+          return res.redirect("/error/404");
+        }
+      } else {
+        req.flash("error", "Passwords are not the same");
+
+        return res.render("users/resetPass", {
+          pageTitle: "Change Password",
+          message: req.flash("success_msg"),
+          error: req.flash("error"),
+          userId: req.params.id,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.redirect("/error/500");
     }
   }
 }

@@ -1,0 +1,31 @@
+<%- include('../includes/header') %>
+<div class="container">
+  <%- include('../includes/massage') %>
+  <form
+    id="loginForm"
+    class="form-signin"
+    action="/admin/forgetPassword"
+    method="POST"
+  >
+    <h1 class="h3 mb-3 font-weight-normal text-center">Forget Password</h1>
+
+    <div class="mb-3">
+      <label for="inputEmail" class="form-label sr-only"
+        >Email address</label
+      >
+      <input
+        type="email"
+        name="email"
+        id="inputEmail"
+        class="form-control mb-2"
+        placeholder="email"
+        required
+        autofocus
+      />
+    </div>
+    <div class="d-grid gap-2">
+      <button type="submit" class="btn btn btn-outline-primary btn-block">Submit</button>
+    </div>
+  </form>
+</div>
+<%- include('../includes/footer') %>

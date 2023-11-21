@@ -31,7 +31,7 @@ export class postController {
         .limit(postPerPage);
 
       return res.render("index", {
-        pageTitle: "weblog",
+        pageTitle: "Weblog",
         message: req.flash("success_msg"),
         error: req.flash("error"),
         posts,
@@ -73,7 +73,7 @@ export class postController {
   public static create(req: Request, res: Response) {
     try {
       return res.render("posts/create", {
-        pageTitle: "createPost",
+        pageTitle: "Create Post",
         message: req.flash("success_msg"),
         error: req.flash("error"),
       });
@@ -177,7 +177,7 @@ export class postController {
       if (post) {
         if (post.user!.toString() == req.user._id) {
           return res.render("posts/edit", {
-            pageTitle: "editPost",
+            pageTitle: "Edit Post",
             message: req.flash("success_msg"),
             error: req.flash("error"),
             post,

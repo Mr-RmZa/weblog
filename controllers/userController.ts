@@ -8,6 +8,7 @@ import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { schemaUser } from "../models/secure/userValidation";
+import { schemaForget } from "../models/secure/forgetValidation";
 
 export class userController {
   public static async dashboard(
@@ -95,7 +96,7 @@ export class userController {
     }
   }
 
-  public static async handleLogin(
+  public static async recaptcha(
     req: {
       body: { [x: string]: any };
       connection: { remoteAddress: any };
@@ -187,11 +188,11 @@ export class userController {
         schemaUser
           .validate(req.body, { abortEarly: false })
           .then(() => {
-            bcrypt.hash(password, 10).then(async (res) => {
+            bcrypt.hash(password, 10).then(async (hash) => {
               await User.create({
                 fullname,
                 email,
-                password: res,
+                password: hash,
               });
             });
 
@@ -316,7 +317,7 @@ export class userController {
 
   public static async handleResetPassword(
     req: {
-      body: { password: any; confirmPassword: any };
+      body: { password: any };
       params: { id: any };
       flash: (arg0: string, arg1?: string | undefined) => void;
     },
@@ -329,34 +330,56 @@ export class userController {
     }
   ) {
     try {
-      const { password, confirmPassword } = req.body;
-      console.log(password, confirmPassword);
-
-      if (password === confirmPassword) {
-        const user = await User.findOne({ _id: req.params.id });
-
-        if (user) {
-          user.password = password;
-          await user.save();
-
-          req.flash(
-            "success_msg",
-            "Your password has been successfully updated"
-          );
-          return res.redirect("/admin/login");
-        } else {
-          return res.redirect("/error/404");
-        }
-      } else {
-        req.flash("error", "Passwords are not the same");
-
-        return res.render("users/resetPass", {
-          pageTitle: "Change Password",
-          message: req.flash("success_msg"),
-          error: req.flash("error"),
-          userId: req.params.id,
+      const { password } = req.body;
+      schemaForget
+        .validate(req.body, { abortEarly: false })
+        .then(() => {
+          bcrypt.hash(password, 10).then(async (hash) => {
+            const user = await User.findOne({ _id: req.params.id });
+            if (user) {
+              user.password = hash;
+              await user.save();
+              req.flash(
+                "success_msg",
+                "Your password has been successfully updated"
+              );
+              return res.redirect("/admin/login");
+            } else {
+              return res.redirect("/error/404");
+            }
+          });
+        })
+        .catch((err: { errors: any }) => {
+          req.flash("error", err.errors);
+          return res.render("users/resetPass", {
+            pageTitle: "Change Password",
+            message: req.flash("success_msg"),
+            error: req.flash("error"),
+            userId: req.params.id,
+          });
         });
-      }
+    } catch (error) {
+      console.log(error);
+      return res.redirect("/error/500");
+    }
+  }
+
+  public static contact(
+    req: { flash: (arg0: string) => any },
+    res: {
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; message: any; error: any }
+      ) => void;
+      redirect: (arg0: string) => any;
+    }
+  ) {
+    try {
+      res.render("users/contact", {
+        pageTitle: "Content Us",
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+      });
     } catch (error) {
       console.log(error);
       return res.redirect("/error/500");

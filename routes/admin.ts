@@ -10,7 +10,7 @@ routerAdmin.get("/login", userController.login);
 
 routerAdmin.post(
   "/login",
-  userController.handleLogin,
+  userController.recaptcha,
   userController.rememberMe
 );
 
@@ -20,13 +20,17 @@ routerAdmin.get("/register", userController.register);
 
 routerAdmin.post(
   "/register",
-  userController.handleLogin,
+  userController.recaptcha,
   userController.createUser
 );
 
 routerAdmin.get("/forgetPassword", userController.forgetPassword);
 
-routerAdmin.post("/forgetPassword", userController.handleForgetPassword);
+routerAdmin.post(
+  "/forgetPassword",
+  userController.recaptcha,
+  userController.handleForgetPassword
+);
 
 routerAdmin.get("/resetPassword/:token", userController.resetPassword);
 

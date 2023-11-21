@@ -1,57 +1,63 @@
 <%- include('../includes/header') %>
 <div class="container">
-  <%- include('../includes/massage') %>
-  <form action="/admin/login" method="post">
-    <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Email address</label>
-      <input
-        type="email"
-        class="form-control"
-        id="exampleInputEmail1"
-        aria-describedby="emailHelp"
-        name="email"
-        placeholder="email"
-        required
-      />
-    </div>
-    <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Password</label>
-      <input
-        type="password"
-        class="form-control"
-        id="exampleInputPassword1"
-        name="password"
-        placeholder="password"
-        required
-      />
-    </div>
-    <div class="mb-3 form-check">
-      <input
-        name="remember"
-        type="checkbox"
-        class="form-check-input"
-        id="exampleCheck1"
-      />
-      <label class="form-check-label" for="exampleCheck1">Remembert Me</label>
-    </div>
-    <div class="mb-3">
-      <div
-        class="g-recaptcha"
-        data-sitekey="6LfdtGYlAAAAADPKn0zdN-rDtx2stwAG6fUtZ7-5"
-      ></div>
-    </div>
-    <div class="mb-3">
-      <a href="./register" class="text-decoration-none">I Dont Have Account</a>
-    </div>
-    <div class="mb-3">
-      <a href="./forgetPassword" class="text-decoration-none"
-        >Forget Password</a
-      >
-    </div>
-    <div class="d-grid gap-2">
-      <button type="submit" class="btn btn btn-outline-primary">Submit</button>
-    </div>
-  </form>
+  <div class="row">
+    <%- include('../includes/massage') %>
+    <form action="/admin/login" method="post">
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <input
+          type="email"
+          class="form-control"
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          name="email"
+          placeholder="email"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="exampleInputPassword1"
+          name="password"
+          placeholder="password"
+          required
+        />
+      </div>
+      <div class="mb-3 form-check">
+        <input
+          name="remember"
+          type="checkbox"
+          class="form-check-input"
+          id="exampleCheck1"
+        />
+        <label class="form-check-label" for="exampleCheck1">Remembert Me</label>
+      </div>
+      <div class="mb-3">
+        <div
+          class="g-recaptcha"
+          data-sitekey="6LfdtGYlAAAAADPKn0zdN-rDtx2stwAG6fUtZ7-5"
+        ></div>
+      </div>
+      <div class="mb-3">
+        <a href="./register" class="text-decoration-none"
+          >I Dont Have Account</a
+        >
+      </div>
+      <div class="mb-3">
+        <a href="./forgetPassword" class="text-decoration-none"
+          >Forget Password</a
+        >
+      </div>
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn btn-outline-primary">
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <%- include('../includes/footer') %>

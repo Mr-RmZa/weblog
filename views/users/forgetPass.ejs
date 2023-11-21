@@ -1,31 +1,37 @@
 <%- include('../includes/header') %>
-<div class="container">
-  <%- include('../includes/massage') %>
-  <form
-    id="loginForm"
-    class="form-signin"
-    action="/admin/forgetPassword"
-    method="POST"
-  >
-    <h1 class="h3 mb-3 font-weight-normal text-center">Forget Password</h1>
-
-    <div class="mb-3">
-      <label for="inputEmail" class="form-label sr-only"
-        >Email address</label
-      >
-      <input
-        type="email"
-        name="email"
-        id="inputEmail"
-        class="form-control mb-2"
-        placeholder="email"
-        required
-        autofocus
-      />
-    </div>
-    <div class="d-grid gap-2">
-      <button type="submit" class="btn btn btn-outline-primary btn-block">Submit</button>
-    </div>
-  </form>
+    <%- include('../includes/massage') %>
+    <form
+      id="loginForm"
+      class="form-signin"
+      action="/admin/forgetPassword"
+      method="POST"
+    >
+      <h1 class="h3 mb-3 font-weight-normal text-center">Forget Password</h1>
+      <div class="mb-3">
+        <label for="inputEmail" class="form-label sr-only">Email address</label>
+        <input
+          type="email"
+          name="email"
+          id="inputEmail"
+          class="form-control mb-2"
+          placeholder="email"
+          required
+          autofocus
+        />
+      </div>
+      <div class="mb-3">
+        <div
+          class="g-recaptcha"
+          data-sitekey="6LfdtGYlAAAAADPKn0zdN-rDtx2stwAG6fUtZ7-5"
+        ></div>
+      </div>
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn btn-outline-primary btn-block">
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <%- include('../includes/footer') %>

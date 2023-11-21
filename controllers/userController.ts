@@ -375,7 +375,7 @@ export class userController {
     }
   ) {
     try {
-      res.render("users/contact", {
+      return res.render("users/contact", {
         pageTitle: "Content Us",
         message: req.flash("success_msg"),
         error: req.flash("error"),
@@ -385,4 +385,6 @@ export class userController {
       return res.redirect("/error/500");
     }
   }
+
+  public static handleContact(req: any, res: any) {}
 }

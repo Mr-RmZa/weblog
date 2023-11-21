@@ -2,7 +2,7 @@
 <div class="container">
   <div class="row">
     <%- include('../includes/massage') %>
-    <form action="/blog/create" method="POST" enctype="multipart/form-data">
+    <form action="/blog/create" method="post" enctype="multipart/form-data">
       <div class="mb-5">
         <label for="thumbnail" class="form-label">thumbnail</label>
         <input
@@ -16,23 +16,20 @@
         <div class="form-floating">
           <input
             type="search"
-            class="form-control me-2 text-dark"
-            id="exampleInputTitle1"
-            placeholder="title"
+            class="form-control text-dark"
+            id="title"
+            placeholder="Title"
             name="title"
-            placeholder="title"
             required
           />
-          <label for="exampleInputTitle1" class="text-muted">Title</label>
+          <label for="title" class="text-muted">Title</label>
         </div>
       </div>
       <div class="mb-3">
-        <label for="exampleFormControlTextarea1" class="form-label"
-          >description</label
-        >
+        <label for="description" class="form-label">Description</label>
         <textarea
           class="form-control"
-          id="exampleFormControlTextarea1"
+          id="description"
           name="body"
           rows="3"
           required
@@ -49,7 +46,7 @@
             value="public"
             required
           />
-          <label class="form-check-label" for="status1"> public </label>
+          <label class="form-check-label" for="status1"> Public </label>
         </div>
         <div class="form-check">
           <input
@@ -61,7 +58,7 @@
             checked
             required
           />
-          <label class="form-check-label" for="status2"> privet </label>
+          <label class="form-check-label" for="status2"> Privet </label>
         </div>
       </div>
       <div class="mb-3">

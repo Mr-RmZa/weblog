@@ -1,23 +1,21 @@
 <%- include('../includes/header') %>
+<div class="container">
+  <div class="row">
     <%- include('../includes/massage') %>
-    <form
-      id="loginForm"
-      class="form-signin"
-      action="/admin/forgetPassword"
-      method="POST"
-    >
-      <h1 class="h3 mb-3 font-weight-normal text-center">Forget Password</h1>
+    <h1 class="text-center">Forget Password</h1>
+    <form action="/admin/forgetPassword" method="post">
       <div class="mb-3">
-        <label for="inputEmail" class="form-label sr-only">Email address</label>
-        <input
-          type="email"
-          name="email"
-          id="inputEmail"
-          class="form-control mb-2"
-          placeholder="email"
-          required
-          autofocus
-        />
+        <div class="form-floating">
+          <input
+            type="email"
+            class="form-control text-dark"
+            id="email"
+            placeholder="Email"
+            name="email"
+            required
+          />
+          <label for="email" class="text-muted">Email</label>
+        </div>
       </div>
       <div class="mb-3">
         <div

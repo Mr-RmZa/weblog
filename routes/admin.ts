@@ -8,29 +8,17 @@ routerAdmin.get("/", auth.authenticated, userController.dashboard);
 
 routerAdmin.get("/login", userController.login);
 
-routerAdmin.post(
-  "/login",
-  userController.recaptcha,
-  userController.rememberMe
-);
+routerAdmin.post("/login", userController.recaptcha, userController.rememberMe);
 
 routerAdmin.get("/logout", auth.authenticated, userController.logout);
 
 routerAdmin.get("/register", userController.register);
 
-routerAdmin.post(
-  "/register",
-  userController.recaptcha,
-  userController.createUser
-);
+routerAdmin.post("/register", userController.createUser);
 
 routerAdmin.get("/forgetPassword", userController.forgetPassword);
 
-routerAdmin.post(
-  "/forgetPassword",
-  userController.recaptcha,
-  userController.handleForgetPassword
-);
+routerAdmin.post("/forgetPassword", userController.handleForgetPassword);
 
 routerAdmin.get("/resetPassword/:token", userController.resetPassword);
 

@@ -11,9 +11,15 @@ export class errorController {
   public static 500(
     req: any,
     res: {
-      render: (arg0: string, arg1: { pageTitle: string }) => void;
+      render: (
+        arg0: string,
+        arg1: { pageTitle: string; url: string | undefined }
+      ) => any;
     }
   ) {
-    return res.render("errors/500", { pageTitle: "500 | server" });
+    return res.render("errors/500", {
+      pageTitle: "500 | server",
+      url: process.env.URL,
+    });
   }
 }

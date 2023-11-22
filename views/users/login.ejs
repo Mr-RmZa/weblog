@@ -4,36 +4,39 @@
     <%- include('../includes/massage') %>
     <form action="/admin/login" method="post">
       <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Email address</label>
-        <input
-          type="email"
-          class="form-control"
-          id="exampleInputEmail1"
-          aria-describedby="emailHelp"
-          name="email"
-          placeholder="email"
-          required
-        />
+        <div class="form-floating">
+          <input
+            type="email"
+            class="form-control text-dark"
+            id="email"
+            placeholder="Email"
+            name="email"
+            required
+          />
+          <label for="email" class="text-muted">Email</label>
+        </div>
       </div>
       <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="exampleInputPassword1"
-          name="password"
-          placeholder="password"
-          required
-        />
+        <div class="form-floating">
+          <input
+            type="password"
+            class="form-control text-dark"
+            id="password"
+            placeholder="Password"
+            name="password"
+            required
+          />
+          <label for="password" class="text-muted">Password</label>
+        </div>
       </div>
       <div class="mb-3 form-check">
         <input
-          name="remember"
+          name="rememberMe"
           type="checkbox"
           class="form-check-input"
-          id="exampleCheck1"
+          id="rememberMe"
         />
-        <label class="form-check-label" for="exampleCheck1">Remembert Me</label>
+        <label class="form-check-label" for="rememberMe">Remember Me</label>
       </div>
       <div class="mb-3">
         <div

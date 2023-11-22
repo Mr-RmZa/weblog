@@ -13,4 +13,4 @@ router.get("/contact", userController.contact);
 
 router.post("/contact", auth.authenticated, userController.handleContact);
 
-// router.get("/captcha", userController.captcha);
+router.get("/captcha", userController.captcha);

@@ -2,36 +2,35 @@
 <div class="container">
   <div class="row">
     <%- include('../includes/massage') %>
-    <form
-      id="loginForm"
-      class="form-signin"
-      action="/admin/resetPassword/<%= userId %>"
-      method="POST"
-    >
+    <form action="/admin/resetPassword/<%= userId %>" method="post">
       <h1 class="h3 mb-3 font-weight-normal text-center">change Password</h1>
       <div class="mb-3">
-        <label for="inputEmail" class="form-label sr-only">Password</label>
-        <input
-          type="password"
-          name="password"
-          id="inputPassword"
-          class="form-control mb-2"
-          placeholder="password"
-          required
-        />
+        <div class="form-floating">
+          <input
+            type="password"
+            class="form-control text-dark"
+            id="password"
+            placeholder="Password"
+            name="password"
+            required
+          />
+          <label for="password" class="text-muted">Password</label>
+        </div>
       </div>
       <div class="mb-3">
-        <label for="inputConfirmPassword" class="form-label sr-only"
-          >Repeat Password</label
-        >
-        <input
-          type="password"
-          name="confirmPassword"
-          id="inputConfirmPassword"
-          class="form-control mb-2"
-          placeholder="repeat password"
-          required
-        />
+        <div class="form-floating">
+          <input
+            type="password"
+            class="form-control text-dark"
+            id="confirmPassword"
+            placeholder="Confirm Password"
+            name="confirmPassword"
+            required
+          />
+          <label for="confirmPassword" class="text-muted"
+            >Confirm Password</label
+          >
+        </div>
       </div>
       <div class="d-grid gap-2">
         <button type="submit" class="btn btn btn-outline-primary btn-block">

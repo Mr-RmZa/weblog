@@ -3,18 +3,22 @@ import bcrypt from "bcryptjs";
 import passport from "passport";
 import { User } from "../models/User";
 import { Blog } from "../models/Blog";
+import * as svgCaptcha from "svg-captcha";
 import { sendEmail } from "../utils/mailer";
 import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { schemaUser } from "../models/secure/userValidation";
-import { schemaForget } from "../models/secure/forgetValidation";
+import {
+  schemaContact,
+  schemaForget,
+  schemaUser,
+} from "../models/secure/userValidation";
 
 export class userController {
   public static async dashboard(
     req: {
       query: { page: string | number };
-      user: { _id: any; id: any; fullname: any };
+      user: { _id: any; id: any; fullName: any };
       flash: (arg0: string) => any;
     },
     res: any
@@ -35,7 +39,7 @@ export class userController {
         pageTitle: "Dashboard",
         message: req.flash("success_msg"),
         error: req.flash("error"),
-        name: req.user.fullname,
+        name: req.user.fullName,
         blogs,
         formatDate,
         currentPage: page,
@@ -133,13 +137,13 @@ export class userController {
   public static rememberMe(
     req: {
       flash(arg0: string, arg1: string): unknown;
-      body: { remember: any };
+      body: { rememberMe: any };
       session: { cookie: { originalMaxAge: number; expires: null } };
     },
     res: any
   ) {
     try {
-      if (req.body.remember) {
+      if (req.body.rememberMe) {
         req.session.cookie.originalMaxAge = 20 * 60 * 60 * 1000; // 1 day or 24 hour
       } else {
         req.session.cookie.expires = null;
@@ -176,13 +180,13 @@ export class userController {
 
   public static async createUser(
     req: {
-      body: { fullname: any; email: any; password: any };
+      body: { fullName: any; email: any; password: any };
       flash: (arg0: string, arg1: string) => void;
     },
     res: any
   ) {
     try {
-      const { fullname, email, password } = req.body;
+      const { fullName, email, password } = req.body;
       const user = await User.findOne({ email });
       if (!user) {
         schemaUser
@@ -190,7 +194,7 @@ export class userController {
           .then(() => {
             bcrypt.hash(password, 10).then(async (hash) => {
               await User.create({
-                fullname,
+                fullName,
                 email,
                 password: hash,
               });
@@ -199,7 +203,7 @@ export class userController {
             //? Send Welcome Email
             sendEmail(
               email,
-              fullname,
+              fullName,
               "خوش آمدی به وبلاگ ما",
               "خیلی خوشحالیم که به جمع ما وبلاگرهای خفن ملحق شدی"
             );
@@ -212,7 +216,7 @@ export class userController {
             return res.redirect("/admin/register");
           });
       } else {
-        req.flash("error", "Duplicate Email!");
+        req.flash("error", "duplicate email!");
         return res.redirect("/admin/register");
       }
     } catch (error) {
@@ -259,18 +263,18 @@ export class userController {
 
         sendEmail(
           user.email!,
-          user.fullname!,
+          user.fullName!,
           "فراموشی رمز عبور",
           `جهت تغییر رمز عبور فعلی رو لینک زیر کلیک کنید
           <a href="${resetLink}">لینک تغییر رمز عبور</a>`
         );
         req.flash(
           "success_msg",
-          "The email containing the link has been sent successfully"
+          "the email containing the link has been sent successfully"
         );
         return res.redirect("/admin/forgetPassword");
       } else {
-        req.flash("error", "User with email is not registered in the database");
+        req.flash("error", "user with email is not registered");
         return res.redirect("/admin/forgetPassword");
       }
     } catch (error) {
@@ -341,7 +345,7 @@ export class userController {
               await user.save();
               req.flash(
                 "success_msg",
-                "Your password has been successfully updated"
+                "your password has been successfully updated"
               );
               return res.redirect("/admin/login");
             } else {
@@ -386,5 +390,40 @@ export class userController {
     }
   }
 
-  public static handleContact(req: any, res: any) {}
+  public static handleContact(req: any, res: any) {
+    try {
+      const { fullName, email, message, captcha } = req.body;
+      schemaContact
+        .validate(req.body, { abortEarly: false })
+        .then(() => {
+          if (captcha === req.session.captcha) {
+            sendEmail(
+              email,
+              fullName,
+              "پیام از طرف وبلاگ",
+              `${message} <br/> ایمیل کاربر : ${email}`
+            );
+            req.flash("success_msg", "your message has been successfully sent");
+            return res.redirect("/contact");
+          } else {
+            req.flash("error", "the code is not correct");
+            return res.redirect("/contact");
+          }
+        })
+        .catch((err: { errors: any }) => {
+          req.flash("error", err.errors);
+          return res.redirect("/contact");
+        });
+    } catch (error) {
+      console.log(error);
+      return res.redirect("/error/500");
+    }
+  }
+
+  public static captcha(req: { session: { captcha: any } }, res: any) {
+    const captcha = svgCaptcha.createMathExpr({ mathMin: 1 });
+    req.session.captcha = captcha.text;
+    res.type("svg");
+    res.status(200).send(captcha.data);
+  }
 }

@@ -134,7 +134,7 @@ export class postController {
           if (err.code === "LIMIT_FILE_SIZE") {
             return res
               .status(400)
-              .send("The size of the photo sent should not be more than 4 MB");
+              .send("the size of the photo sent should not be more than 4 MB");
           }
           console.log(err);
 
@@ -152,7 +152,7 @@ export class postController {
               .status(200)
               .send(`http://localhost:3000/uploads/${fileName}`);
           } else {
-            return res.send("You must select a photo to upload");
+            return res.send("you must select a photo to upload");
           }
         }
       });

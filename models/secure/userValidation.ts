@@ -1,8 +1,8 @@
 import { object, ref, string } from "yup";
 
 export const schemaUser = object().shape({
-  fullname: string()
-    .required("full lname is required")
+  fullName: string()
+    .required("full name is required")
     .min(5, "full name minimum 5 character")
     .max(100, "full name maximum 100 character"),
   email: string().email("please enter email").required("email is required"),
@@ -13,4 +13,27 @@ export const schemaUser = object().shape({
   confirmPassword: string()
     .required("confirm password is required")
     .oneOf([ref("password")], "password does not match"),
+});
+
+export const schemaForget = object().shape({
+  password: string()
+    .required("password is required")
+    .min(5, "password minimum 5 character")
+    .max(100, "password maximum 100 character"),
+  confirmPassword: string()
+    .required("confirm password is required")
+    .oneOf([ref("password")], "password does not match"),
+});
+
+export const schemaContact = object().shape({
+  fullName: string()
+    .required("full name is required")
+    .min(5, "full name minimum 5 character")
+    .max(100, "full name maximum 100 character"),
+  email: string()
+    .email("the email address is not correct")
+    .required("email is required"),
+  message: string()
+    .required("massage is required")
+    .min(5, "message minimum 5 character"),
 });

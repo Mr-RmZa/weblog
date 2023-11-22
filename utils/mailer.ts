@@ -16,7 +16,7 @@ const transporterDetails = smtpTransport({
 
 export const sendEmail = (
   email: string,
-  fullname: string,
+  fullName: string,
   subject: string,
   message: string
 ): void => {
@@ -25,7 +25,7 @@ export const sendEmail = (
     from: "toplearn@ghorbany.dev",
     to: email,
     subject: subject,
-    html: `<h1> سلام ${fullname}</h1>
+    html: `<h1> سلام ${fullName}</h1>
             <p>${message}</p>`,
   });
 };

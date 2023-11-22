@@ -296,4 +296,50 @@ export class postController {
       return res.redirect("/error/500");
     }
   }
+
+  public static async search(req: any, res: any) {
+    try {
+      const page = +req.query.page! || 1;
+      const postPerPage = 5;
+
+      const postsSearch = await Blog.find({
+        status: "public",
+      })
+        .sort({
+          createdAt: "desc",
+        })
+        .skip((page - 1) * postPerPage)
+        .limit(postPerPage);
+
+      let posts: {}[] = [];
+
+      postsSearch.map((post) => {
+        if (post.title.includes(req.body.search)) {
+          posts.push(post);
+        }
+      });
+
+      const numberOfPosts = posts.length;
+
+      console.log(numberOfPosts, posts);
+
+      return res.render("index", {
+        pageTitle: `your search results ${req.body.search}`,
+        message: req.flash("success_msg"),
+        error: req.flash("error"),
+        posts,
+        formatDate,
+        truncate,
+        currentPage: page,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        hasNextPage: postPerPage * page < numberOfPosts,
+        hasPreviousPage: page > 1,
+        lastPage: Math.ceil(numberOfPosts / postPerPage),
+      });
+    } catch (error) {
+      console.log(error);
+      return res.redirect("/error/500");
+    }
+  }
 }

@@ -1,66 +1,70 @@
 <%- include('../includes/header') %>
-<div class="container">
-  <div class="row">
-    <%- include('../includes/massage') %>
-    <form action="/admin/login" method="post">
-      <div class="mb-3">
-        <div class="form-floating">
-          <input
-            type="email"
-            class="form-control text-dark"
-            id="email"
-            placeholder="Email"
-            name="email"
-            required
-          />
-          <label for="email" class="text-muted">Email</label>
-        </div>
+<article>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <%- include('../includes/massage') %>
+        <form action="/admin/login" method="post">
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="email"
+                class="form-control text-dark"
+                id="email"
+                placeholder="Email"
+                name="email"
+                required
+              />
+              <label for="email" class="text-muted">Email</label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="password"
+                class="form-control text-dark"
+                id="password"
+                placeholder="Password"
+                name="password"
+                required
+              />
+              <label for="password" class="text-muted">Password</label>
+            </div>
+          </div>
+          <div class="mb-3 form-check">
+            <input
+              name="rememberMe"
+              type="checkbox"
+              class="form-check-input"
+              id="rememberMe"
+            />
+            <label class="form-check-label" for="rememberMe">Remember Me</label>
+          </div>
+          <div class="mb-3">
+            <div
+              class="g-recaptcha"
+              data-sitekey="6LfdtGYlAAAAADPKn0zdN-rDtx2stwAG6fUtZ7-5"
+            ></div>
+          </div>
+          <div class="mb-3">
+            <a href="./register" class="text-decoration-none"
+              >I Dont Have Account</a
+            >
+          </div>
+          <div class="mb-3">
+            <a href="./forgetPassword" class="text-decoration-none"
+              >Forget Password</a
+            >
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn btn-outline-primary">
+              Submit
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="mb-3">
-        <div class="form-floating">
-          <input
-            type="password"
-            class="form-control text-dark"
-            id="password"
-            placeholder="Password"
-            name="password"
-            required
-          />
-          <label for="password" class="text-muted">Password</label>
-        </div>
-      </div>
-      <div class="mb-3 form-check">
-        <input
-          name="rememberMe"
-          type="checkbox"
-          class="form-check-input"
-          id="rememberMe"
-        />
-        <label class="form-check-label" for="rememberMe">Remember Me</label>
-      </div>
-      <div class="mb-3">
-        <div
-          class="g-recaptcha"
-          data-sitekey="6LfdtGYlAAAAADPKn0zdN-rDtx2stwAG6fUtZ7-5"
-        ></div>
-      </div>
-      <div class="mb-3">
-        <a href="./register" class="text-decoration-none"
-          >I Dont Have Account</a
-        >
-      </div>
-      <div class="mb-3">
-        <a href="./forgetPassword" class="text-decoration-none"
-          >Forget Password</a
-        >
-      </div>
-      <div class="d-grid gap-2">
-        <button type="submit" class="btn btn btn-outline-primary">
-          Submit
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
-</div>
+</article>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <%- include('../includes/footer') %>

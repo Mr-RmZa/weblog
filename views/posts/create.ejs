@@ -1,108 +1,112 @@
 <%- include('../includes/header') %>
-<div class="container">
-  <div class="row">
-    <%- include('../includes/massage') %>
-    <form action="/blog/create" method="post" enctype="multipart/form-data">
-      <div class="mb-5">
-        <label for="thumbnail" class="form-label">thumbnail</label>
-        <input
-          class="form-control"
-          type="file"
-          id="thumbnail"
-          name="thumbnail"
-        />
-      </div>
-      <div class="mb-3">
-        <div class="form-floating">
-          <input
-            type="search"
-            class="form-control text-dark"
-            id="title"
-            placeholder="Title"
-            name="title"
-            required
-          />
-          <label for="title" class="text-muted">Title</label>
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea
-          class="form-control"
-          id="description"
-          name="body"
-          rows="3"
-          required
-        ></textarea>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Status</label>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="status"
-            id="status1"
-            value="public"
-            required
-          />
-          <label class="form-check-label" for="status1"> Public </label>
-        </div>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="status"
-            id="status2"
-            value="private"
-            checked
-            required
-          />
-          <label class="form-check-label" for="status2"> Privet </label>
-        </div>
-      </div>
-      <div class="mb-3">
-        <div class="row">
-          <div class="col">
-            <label id="imageStatus" class="form-label"></label>
+<article>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <%- include('../includes/massage') %>
+        <form action="/blog/create" method="post" enctype="multipart/form-data">
+          <div class="mb-5">
+            <label for="thumbnail" class="form-label">thumbnail</label>
+            <input
+              class="form-control"
+              type="file"
+              id="thumbnail"
+              name="thumbnail"
+            />
           </div>
-          <div class="col">
-            <label id="uploadResult" class="form-label float-end"></label>
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="search"
+                class="form-control text-dark"
+                id="title"
+                placeholder="Title"
+                name="title"
+                required
+              />
+              <label for="title" class="text-muted">Title</label>
+            </div>
           </div>
-        </div>
-        <label for="selectedImage" class="form-label">File Upload</label>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              id="imageUpload"
-            >
-              upload file
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              id="description"
+              name="body"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="status"
+                id="status1"
+                value="public"
+                required
+              />
+              <label class="form-check-label" for="status1"> Public </label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="status"
+                id="status2"
+                value="private"
+                checked
+                required
+              />
+              <label class="form-check-label" for="status2"> Privet </label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="row">
+              <div class="col">
+                <label id="imageStatus" class="form-label"></label>
+              </div>
+              <div class="col">
+                <label id="uploadResult" class="form-label float-end"></label>
+              </div>
+            </div>
+            <label for="selectedImage" class="form-label">File Upload</label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  id="imageUpload"
+                >
+                  upload file
+                </button>
+              </div>
+              <input class="form-control" type="file" id="selectedImage" />
+            </div>
+            <div id="progressDiv" style="display: none">
+              <div class="progress">
+                <div
+                  id="progressBar"
+                  class="progress-bar progress-bar-striped progress-bar-animated"
+                  role="progressbar"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn btn-outline-primary">
+              Submit
             </button>
           </div>
-          <input class="form-control" type="file" id="selectedImage" />
-        </div>
-        <div id="progressDiv" style="display: none">
-          <div class="progress">
-            <div
-              id="progressBar"
-              class="progress-bar progress-bar-striped progress-bar-animated"
-              role="progressbar"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            ></div>
-          </div>
-        </div>
+        </form>
       </div>
-      <div class="d-grid gap-2">
-        <button type="submit" class="btn btn btn-outline-primary">
-          Submit
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
-</div>
+</article>
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.21.0/ckeditor.js"
   integrity="sha512-ff67djVavIxfsnP13CZtuHqf7VyX62ZAObYle+JlObWZvS4/VQkNVaFBOO6eyx2cum8WtiZ0pqyxLCQKC7bjcg=="

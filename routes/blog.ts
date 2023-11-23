@@ -15,3 +15,5 @@ routerBlog.post("/edit/:id", auth.authenticated, postController.update);
 routerBlog.get("/delete/:id", auth.authenticated, postController.delete);
 
 routerBlog.post("/upload", auth.authenticated, postController.upload);
+
+routerBlog.get("/search", auth.authenticated, postController.searchPost);

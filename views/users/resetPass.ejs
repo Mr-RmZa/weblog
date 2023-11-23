@@ -1,43 +1,49 @@
 <%- include('../includes/header') %>
-<div class="container">
-  <div class="row">
-    <%- include('../includes/massage') %>
-    <form action="/admin/resetPassword/<%= userId %>" method="post">
-      <h1 class="h3 mb-3 font-weight-normal text-center">change Password</h1>
-      <div class="mb-3">
-        <div class="form-floating">
-          <input
-            type="password"
-            class="form-control text-dark"
-            id="password"
-            placeholder="Password"
-            name="password"
-            required
-          />
-          <label for="password" class="text-muted">Password</label>
-        </div>
+<article>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <%- include('../includes/massage') %>
+        <form action="/admin/resetPassword/<%= userId %>" method="post">
+          <h1 class="h3 mb-3 font-weight-normal text-center">
+            change Password
+          </h1>
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="password"
+                class="form-control text-dark"
+                id="password"
+                placeholder="Password"
+                name="password"
+                required
+              />
+              <label for="password" class="text-muted">Password</label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-floating">
+              <input
+                type="password"
+                class="form-control text-dark"
+                id="confirmPassword"
+                placeholder="Confirm Password"
+                name="confirmPassword"
+                required
+              />
+              <label for="confirmPassword" class="text-muted"
+                >Confirm Password</label
+              >
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn btn-outline-primary btn-block">
+              Submit
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="mb-3">
-        <div class="form-floating">
-          <input
-            type="password"
-            class="form-control text-dark"
-            id="confirmPassword"
-            placeholder="Confirm Password"
-            name="confirmPassword"
-            required
-          />
-          <label for="confirmPassword" class="text-muted"
-            >Confirm Password</label
-          >
-        </div>
-      </div>
-      <div class="d-grid gap-2">
-        <button type="submit" class="btn btn btn-outline-primary btn-block">
-          Submit
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
-</div>
+</article>
 <%- include('../includes/footer') %>

@@ -1,4 +1,4 @@
-import { object, ref, string } from "yup";
+import { number, object, ref, string } from "yup";
 
 export const schemaUser = object().shape({
   fullName: string()
@@ -15,7 +15,12 @@ export const schemaUser = object().shape({
     .oneOf([ref("password")], "password does not match"),
 });
 
-export const schemaForget = object().shape({
+export const schemaForgetPass = object().shape({
+  email: string().email("please enter email").required("email is required"),
+  captcha: number().required("captcha is required"),
+});
+
+export const schemaResetPass = object().shape({
   password: string()
     .required("password is required")
     .min(5, "password minimum 5 character")
@@ -36,4 +41,5 @@ export const schemaContact = object().shape({
   message: string()
     .required("massage is required")
     .min(5, "message minimum 5 character"),
+  captcha: number().required("captcha is required"),
 });

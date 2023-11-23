@@ -1,80 +1,86 @@
 <%- include('../includes/header') %>
-<div class="container mt-5">
-  <div class="row">
-    <div class="col">
-      <h1 class="mt-4"><%= post.title %></h1>
-      <p class="lead">
-        Written by :
-        <a href="#" class="text-decoration-none"><%= post.user.fullName %></a>
-      </p>
-      <hr />
-      <p>Posted in Date : <%=formatDate(post.createdAt) %></p>
-      <hr />
-      <div class="text-center">
-        <img
-          class="img-fluid mx-auto d-block mt-3"
-          src="http://localhost:3000/uploads/thumbnails/<%= post.thumbnail %>"
-          alt=""
-        />
-      </div>
-      <hr />
-      <div class="text-justify text-break" dir="rtl"><%- post.body %></div>
-      <hr />
-      <div class="card my-4 text-dark">
-        <h5 class="card-header">Write your opinion :</h5>
-        <div class="card-body">
-          <form>
-            <div class="form-floating">
-              <textarea
-                class="form-control"
-                placeholder="Leave a comment here"
-                id="floatingTextarea"
-              ></textarea>
-              <label for="floatingTextarea" class="text-muted">Comments</label>
-            </div>
-            <div class="d-grid gap-2">
-              <button type="submit" class="btn btn btn-primary">Submit</button>
-            </div>
-          </form>
+<article>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <h1 class="mt-4"><%= post.title %></h1>
+        <p class="lead">
+          Written by :
+          <a class="text-decoration-none"><%= post.user.fullName %></a>
+        </p>
+        <hr />
+        <p>Posted in Date : <%=formatDate(post.createdAt) %></p>
+        <hr />
+        <div class="text-center">
+          <img
+            class="img-fluid mx-auto d-block mt-3"
+            src="http://localhost:3000/uploads/thumbnails/<%= post.thumbnail %>"
+            alt=""
+          />
         </div>
-      </div>
-      <!-- Single Comment -->
-      <div class="media mb-4">
-        <img
-          class="d-flex mr-3 rounded-circle"
-          src="http://placehold.it/50x50"
-          alt=""
-        />
-        <div class="media-body">
-          <h5 class="mt-0">یونس قربانی</h5>
-          این یک نظر تست می باشد
+        <hr />
+        <div class="text-justify text-break" dir="rtl"><%- post.body %></div>
+        <hr />
+        <div class="card my-4 text-dark">
+          <h5 class="card-header">Write your opinion :</h5>
+          <div class="card-body">
+            <form>
+              <div class="form-floating">
+                <textarea
+                  class="form-control"
+                  placeholder="Leave a comment here"
+                  id="floatingTextarea"
+                ></textarea>
+                <label for="floatingTextarea" class="text-muted"
+                  >Comments</label
+                >
+              </div>
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn btn-primary">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
-      <!-- Comment with nested comments -->
-      <div class="media mb-4">
-        <img
-          class="d-flex mr-3 rounded-circle"
-          src="http://placehold.it/50x50"
-          alt=""
-        />
-        <div class="media-body">
-          <h5 class="mt-0">یونس قربانی</h5>
-          نظر تست
+        <!-- Single Comment -->
+        <div class="media mb-4">
+          <img
+            class="d-flex mr-3 rounded-circle"
+            src="http://placehold.it/50x50"
+            alt=""
+          />
+          <div class="media-body">
+            <h5 class="mt-0">یونس قربانی</h5>
+            این یک نظر تست می باشد
+          </div>
+        </div>
+        <!-- Comment with nested comments -->
+        <div class="media mb-4">
+          <img
+            class="d-flex mr-3 rounded-circle"
+            src="http://placehold.it/50x50"
+            alt=""
+          />
+          <div class="media-body">
+            <h5 class="mt-0">یونس قربانی</h5>
+            نظر تست
 
-          <div class="media mt-4">
-            <img
-              class="d-flex mr-3 rounded-circle"
-              src="http://placehold.it/50x50"
-              alt=""
-            />
-            <div class="media-body">
-              <h5 class="mt-0">یونس قربانی</h5>
-              نظر تست
+            <div class="media mt-4">
+              <img
+                class="d-flex mr-3 rounded-circle"
+                src="http://placehold.it/50x50"
+                alt=""
+              />
+              <div class="media-body">
+                <h5 class="mt-0">یونس قربانی</h5>
+                نظر تست
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</article>
 <%- include('../includes/footer') %>

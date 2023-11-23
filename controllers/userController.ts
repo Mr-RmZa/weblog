@@ -9,9 +9,10 @@ import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import {
-  schemaContact,
-  schemaForget,
   schemaUser,
+  schemaContact,
+  schemaResetPass,
+  schemaForgetPass,
 } from "../models/secure/userValidation";
 
 export class userController {
@@ -248,35 +249,56 @@ export class userController {
   }
 
   public static async handleForgetPassword(
-    req: { body: { email: any }; flash: (arg0: string, arg1: string) => void },
+    req: {
+      body: { email: any; captcha: any };
+      session: { captcha: any };
+      flash: (arg0: string, arg1: string) => void;
+    },
     res: any
   ) {
     try {
-      const { email } = req.body;
-      const user = await User.findOne({ email: email });
-      if (user) {
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
-          expiresIn: "1h",
-        });
-        const resetLink = `http://localhost:3000/admin/resetPassword/${token}`;
-        console.log(resetLink);
+      const { email, captcha } = req.body;
+      schemaForgetPass
+        .validate(req.body, { abortEarly: false })
+        .then(async () => {
+          if (captcha === req.session.captcha) {
+            const user = await User.findOne({ email: email });
+            if (user) {
+              const token = jwt.sign(
+                { userId: user._id },
+                process.env.JWT_SECRET!,
+                {
+                  expiresIn: "1h",
+                }
+              );
+              const resetLink = `http://localhost:3000/admin/resetPassword/${token}`;
+              console.log(resetLink);
 
-        sendEmail(
-          user.email!,
-          user.fullName!,
-          "فراموشی رمز عبور",
-          `جهت تغییر رمز عبور فعلی رو لینک زیر کلیک کنید
+              sendEmail(
+                user.email!,
+                user.fullName!,
+                "فراموشی رمز عبور",
+                `جهت تغییر رمز عبور فعلی رو لینک زیر کلیک کنید
           <a href="${resetLink}">لینک تغییر رمز عبور</a>`
-        );
-        req.flash(
-          "success_msg",
-          "the email containing the link has been sent successfully"
-        );
-        return res.redirect("/admin/forgetPassword");
-      } else {
-        req.flash("error", "user with email is not registered");
-        return res.redirect("/admin/forgetPassword");
-      }
+              );
+              req.flash(
+                "success_msg",
+                "the email containing the link has been sent successfully"
+              );
+              return res.redirect("/admin/forgetPassword");
+            } else {
+              req.flash("error", "user with email is not registered");
+              return res.redirect("/admin/forgetPassword");
+            }
+          } else {
+            req.flash("error", "the code is not correct");
+            return res.redirect("/admin/forgetPassword");
+          }
+        })
+        .catch((err: { errors: any }) => {
+          req.flash("error", err.errors);
+          return res.redirect("/admin/forgetPassword");
+        });
     } catch (error) {
       console.log(error);
       return res.redirect("/error/500");
@@ -335,7 +357,7 @@ export class userController {
   ) {
     try {
       const { password } = req.body;
-      schemaForget
+      schemaResetPass
         .validate(req.body, { abortEarly: false })
         .then(() => {
           bcrypt.hash(password, 10).then(async (hash) => {

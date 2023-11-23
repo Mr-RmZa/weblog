@@ -297,46 +297,101 @@ export class postController {
     }
   }
 
-  public static async search(req: any, res: any) {
+  public static async search(
+    req: {
+      query: { page: any; search: string | RegExp };
+      body: string;
+      flash: (arg0: string, arg1?: string) => any;
+    },
+    res: Response
+  ) {
     try {
-      const page = +req.query.page! || 1;
-      const postPerPage = 5;
+      if (req.query.search) {
+        const page = +req.query.page! || 1;
+        const postPerPage = 5;
 
-      const postsSearch = await Blog.find({
-        status: "public",
-      })
-        .sort({
-          createdAt: "desc",
+        const numberOfPosts = await Blog.find({
+          status: "public",
+          title: { $regex: new RegExp(req.query.search, "i") },
+        }).countDocuments();
+
+        const posts = await Blog.find({
+          status: "public",
+          title: { $regex: new RegExp(req.query.search, "i") },
         })
-        .skip((page - 1) * postPerPage)
-        .limit(postPerPage);
+          .sort({
+            createdAt: "desc",
+          })
+          .skip((page - 1) * postPerPage)
+          .limit(postPerPage);
+        console.log(numberOfPosts, posts);
 
-      let posts: {}[] = [];
+        return res.render("index", {
+          pageTitle: `your search results "${req.query.search}"`,
+          message: req.flash("success_msg"),
+          error: req.flash("error"),
+          posts,
+          formatDate,
+          truncate,
+          currentPage: page,
+          nextPage: page + 1,
+          previousPage: page - 1,
+          hasNextPage: postPerPage * page < numberOfPosts,
+          hasPreviousPage: page > 1,
+          lastPage: Math.ceil(numberOfPosts / postPerPage),
+        });
+      } else {
+        req.flash("error", "search is required");
+        return res.redirect("/");
+      }
+    } catch (error) {
+      console.log(error);
+      return res.redirect("/error/500");
+    }
+  }
 
-      postsSearch.map((post) => {
-        if (post.title.includes(req.body.search)) {
-          posts.push(post);
-        }
-      });
+  public static async searchPost(req: any, res: Response) {
+    try {
+      if (req.query.search) {
+        const page = +req.query.page! || 1;
+        const postPerPage = 5;
 
-      const numberOfPosts = posts.length;
+        const numberOfPosts = await Blog.find({
+          status: "public",
+          user: req.user.id,
+          title: { $regex: new RegExp(req.query.search, "i") },
+        }).countDocuments();
 
-      console.log(numberOfPosts, posts);
+        const blogs = await Blog.find({
+          status: "public",
+          user: req.user.id,
+          title: { $regex: new RegExp(req.query.search, "i") },
+        })
+          .sort({
+            createdAt: "desc",
+          })
+          .skip((page - 1) * postPerPage)
+          .limit(postPerPage);
 
-      return res.render("index", {
-        pageTitle: `your search results ${req.body.search}`,
-        message: req.flash("success_msg"),
-        error: req.flash("error"),
-        posts,
-        formatDate,
-        truncate,
-        currentPage: page,
-        nextPage: page + 1,
-        previousPage: page - 1,
-        hasNextPage: postPerPage * page < numberOfPosts,
-        hasPreviousPage: page > 1,
-        lastPage: Math.ceil(numberOfPosts / postPerPage),
-      });
+        return res.render("users/index", {
+          pageTitle: `your search results "${req.query.search}"`,
+          message: req.flash("success_msg"),
+          error: req.flash("error"),
+          blogs,
+          name: req.user.fullName,
+          formatDate,
+          truncate,
+          currentPage: page,
+          nextPage: page + 1,
+          previousPage: page - 1,
+          hasNextPage: postPerPage * page < numberOfPosts,
+          hasPreviousPage: page > 1,
+          lastPage: Math.ceil(numberOfPosts / postPerPage),
+        });
+      } else {
+        req.flash("error", "search is required");
+        return res.redirect("/admin");
+      }
     } catch (error) {
       console.log(error);
       return res.redirect("/error/500");

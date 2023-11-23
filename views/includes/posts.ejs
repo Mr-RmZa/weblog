@@ -1,39 +1,35 @@
-<% if(posts.length > 0) { %> <% for(let post of posts) { %>
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <div class="card text-dark mt-4 mb-4 text-center" style="width: 18rem">
-        <img
-          class="card-img-top"
-          src="http://localhost:3000/uploads/thumbnails/<%= post.thumbnail %>"
-          alt="Card image cap"
-        />
-        <div class="card-body">
-          <h2 class="card-title"><%= post.title %></h2>
-          <div class="card-text text-justify" dir="rtl">
-            <%- truncate(post.body, 300) %>
+<article>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <% if(posts.length > 0) { for(let post of posts) { %>
+        <div class="card text-dark mt-4 mb-4 text-center" style="width: 18rem">
+          <img
+            class="card-img-top"
+            src="http://localhost:3000/uploads/thumbnails/<%= post.thumbnail %>"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h2 class="card-title"><%= post.title %></h2>
+            <div class="card-text text-justify" dir="rtl">
+              <%- truncate(post.body, 300) %>
+            </div>
+            <div class="d-grid gap-2">
+              <a href="/post/<%= post._id %>" class="btn btn btn-primary"
+                >More ...</a
+              >
+            </div>
           </div>
-          <div class="d-grid gap-2">
-            <a href="/post/<%= post._id %>" class="btn btn btn-primary"
-              >More ...</a
-            >
+          <div class="card-footer text-muted">
+            Posted in Date : <%=formatDate(post.createdAt) %>
           </div>
         </div>
-        <div class="card-footer text-muted">
-          Posted in Date : <%=formatDate(post.createdAt) %>
+        <% } %> <%- include("../includes/pagination.ejs") %> <% } else {%>
+        <div class="m-5 text-center">
+          <h1>there is nothing</h1>
         </div>
+        <% } %>
       </div>
     </div>
   </div>
-</div>
-<% } %> <%- include("../includes/pagination.ejs") %> <% } else {%>
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <div class="m-5 text-center">
-        <h1>there is nothing</h1>
-      </div>
-    </div>
-  </div>
-</div>
-<% } %>
+</article>

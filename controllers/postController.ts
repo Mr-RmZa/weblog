@@ -35,6 +35,7 @@ export class postController {
         message: req.flash("success_msg"),
         error: req.flash("error"),
         posts,
+        url: process.env.URl,
         formatDate,
         truncate,
         currentPage: page,
@@ -58,6 +59,7 @@ export class postController {
         return res.render("posts/show", {
           pageTitle: post.title,
           post,
+          url: process.env.URl,
           formatDate,
         });
       } else {
@@ -136,21 +138,23 @@ export class postController {
               .status(400)
               .send("the size of the photo sent should not be more than 4 MB");
           }
-          console.log(err);
+          console.log(err,err.code);
 
           return res.status(400).send(err);
         } else {
-          if (req.file) {
-            const fileName = `${shortId.generate()}_${req.file.originalname}`;
-            await sharp(req.file.buffer)
-              .jpeg({
-                quality: 60,
-              })
-              .toFile(`./public/uploads/${fileName}`)
-              .catch((err) => console.log(err));
-            return res
-              .status(200)
-              .send(`http://localhost:3000/uploads/${fileName}`);
+          if (req.files) {
+            console.log(req.files);
+            
+            // const fileName = `${shortId.generate()}_${req.files.image.data}`;
+            // await sharp(req.files.image.data)
+            //   .jpeg({
+            //     quality: 60,
+            //   })
+            //   .toFile(`./public/uploads/${fileName}`)
+            //   .catch((err) => console.log(err));
+            // return res
+            //   .status(200)
+            //   .send(`http://${process.env.URL}:3000/uploads/${fileName}`);
           } else {
             return res.send("you must select a photo to upload");
           }
@@ -324,13 +328,13 @@ export class postController {
           })
           .skip((page - 1) * postPerPage)
           .limit(postPerPage);
-        console.log(numberOfPosts, posts);
 
         return res.render("index", {
           pageTitle: `your search results "${req.query.search}"`,
           message: req.flash("success_msg"),
           error: req.flash("error"),
           posts,
+          url: process.env.URl,
           formatDate,
           truncate,
           currentPage: page,

@@ -271,7 +271,7 @@ export class userController {
                   expiresIn: "1h",
                 }
               );
-              const resetLink = `http://localhost:3000/admin/resetPassword/${token}`;
+              const resetLink = `http://${process.env.URL}:3000/admin/resetPassword/${token}`;
               console.log(resetLink);
 
               sendEmail(

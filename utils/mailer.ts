@@ -2,12 +2,12 @@ import * as nodeMailer from "nodemailer";
 import smtpTransport from "nodemailer-smtp-transport";
 
 const transporterDetails = smtpTransport({
-  host: "mail.ghorbany.dev",
-  port: 465,
+  host: process.env.MAIL_HOST,
+  port: parseInt(process.env.MAIL_PORT!),
   secure: true,
   auth: {
-    user: "toplearn@ghorbany.dev",
-    pass: "toplearn123456",
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
   },
   tls: {
     rejectUnauthorized: false,
@@ -22,7 +22,7 @@ export const sendEmail = (
 ): void => {
   const transporter = nodeMailer.createTransport(transporterDetails);
   transporter.sendMail({
-    from: "toplearn@ghorbany.dev",
+    from: process.env.MAIL_USER,
     to: email,
     subject: subject,
     html: `<h1> سلام ${fullName}</h1>

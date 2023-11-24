@@ -36,6 +36,10 @@ export class userController {
         })
         .skip((page - 1) * postPerPage)
         .limit(postPerPage);
+      res.set(
+        "Cache-Control",
+        "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0"
+      );
       return res.render("users/index", {
         pageTitle: "Dashboard",
         message: req.flash("success_msg"),
@@ -60,14 +64,19 @@ export class userController {
   public static login(
     req: { flash: (arg0: string) => any },
     res: {
+      set: (arg0: string, arg1: string) => void;
       render: (
         arg0: string,
         arg1: { pageTitle: string; message: any; error: any }
-      ) => void;
-      redirect: (arg0: string) => void;
+      ) => any;
+      redirect: (arg0: string) => any;
     }
   ) {
     try {
+      res.set(
+        "Cache-Control",
+        "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0"
+      );
       return res.render("users/login", {
         pageTitle: "Login",
         message: req.flash("success_msg"),
@@ -170,6 +179,10 @@ export class userController {
         if (err) {
           return next(err);
         }
+        res.set(
+          "Cache-Control",
+          "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0"
+        );
         req.flash("success_msg", "logout was successfully");
         return res.redirect("/");
       });

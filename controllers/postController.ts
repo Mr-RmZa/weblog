@@ -7,8 +7,7 @@ import { Blog } from "../models/Blog";
 import { Request, Response } from "express";
 import { truncate } from "../utils/helpers";
 import { formatDate } from "../utils/jalali";
-import { fileFilter } from "../utils/multer";
-import { schemaPost } from "../models/secure/postValidation";
+import { schemaImage, schemaPost } from "../models/secure/postValidation";
 
 export class postController {
   public static async index(req: Request, res: Response) {
@@ -124,42 +123,30 @@ export class postController {
     }
   }
 
-  public static upload(req: Request, res: Response) {
+  public static upload(req: { files: { image: any }; body: any }, res: any) {
     try {
-      const upload = multer({
-        limits: { fileSize: 4000000 },
-        fileFilter: fileFilter,
-      }).single("image");
-
-      upload(req, res, async (err) => {
-        if (err) {
-          if (err.code === "LIMIT_FILE_SIZE") {
+      if (req.files) {
+        const image = req.files ? req.files.image : {};
+        const fileName = `${shortId.generate()}_${image.name}`;
+        const uploadPath = `${appRoot}/public/uploads/${fileName}`;
+        req.body = { ...req.body, image };
+        schemaImage
+          .validate(req.body, { abortEarly: false })
+          .then(async () => {
+            await sharp(image.data)
+              .jpeg({ quality: 60 })
+              .toFile(uploadPath)
+              .catch((err) => console.log(err));
             return res
-              .status(400)
-              .send("the size of the photo sent should not be more than 4 MB");
-          }
-          console.log(err,err.code);
-
-          return res.status(400).send(err);
-        } else {
-          if (req.files) {
-            console.log(req.files);
-            
-            // const fileName = `${shortId.generate()}_${req.files.image.data}`;
-            // await sharp(req.files.image.data)
-            //   .jpeg({
-            //     quality: 60,
-            //   })
-            //   .toFile(`./public/uploads/${fileName}`)
-            //   .catch((err) => console.log(err));
-            // return res
-            //   .status(200)
-            //   .send(`http://${process.env.URL}:3000/uploads/${fileName}`);
-          } else {
-            return res.send("you must select a photo to upload");
-          }
-        }
-      });
+              .status(200)
+              .send(`http://${process.env.URL}:3000/uploads/${fileName}`);
+          })
+          .catch((err: { errors: string }) => {
+            return res.status(400).send(err.errors);
+          });
+      } else {
+        return res.send("you must select a photo to upload");
+      }
     } catch (error) {
       console.log(error);
       return res.redirect("/error/500");

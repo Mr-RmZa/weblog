@@ -21,3 +21,14 @@ export const schemaPost = object().shape({
     ),
   }),
 });
+
+export const schemaImage = object().shape({
+  image: object().shape({
+    name: string().required("name photo is required"),
+    size: number().max(3000000, "the photo should not exceed 3 MB"),
+    mimetype: mixed().oneOf(
+      ["image/jpeg", "image/png"],
+      "only png and jpeg extensions are supported"
+    ),
+  }),
+});

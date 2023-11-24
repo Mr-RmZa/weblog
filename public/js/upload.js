@@ -11,7 +11,7 @@ document.getElementById("imageUpload").onclick = function () {
 
   xhttp.onreadystatechange = function () {
     if (xhttp.status === 200) {
-      imageStatus.innerHTML = "Photo upload was successful"; //this.response.message
+      imageStatus.innerHTML = "photo upload was successful"; //this.response.message
       uploadResult.innerHTML = this.responseText; //this.response.address
       selectedImage.value = "";
     } else {
@@ -43,10 +43,12 @@ document.getElementById("imageUpload").onclick = function () {
       formData.append("image", selectedImage.files[0]);
       xhttp.send(formData);
     } else {
-      imageStatus.innerHTML = "Only JPEG extension is supported";
+      imageStatus.innerHTML = "only jpeg extension is supported";
+      uploadResult.innerHTML = "";
+      selectedImage.value = "";
     }
   } else {
-    imageStatus.innerHTML = "You must select a photo to upload";
+    imageStatus.innerHTML = "you must select a photo to upload";
     uploadResult.innerHTML = "";
   }
 };

@@ -66,7 +66,6 @@ blockquote {
   padding: 10px;
   border: 1px dashed #666666;
 }
-
 .mainbox {
   width: 100%;
   background-color: #efefef;
@@ -74,7 +73,6 @@ blockquote {
   margin-bottom: 30px;
   border-right: 8px solid #ffff00;
 }
-
 .mainboxnegativ {
   width: 100%;
   background-color: #000000;
@@ -83,7 +81,6 @@ blockquote {
   border-right: 8px solid #ffff00;
   color: #f9f9f9;
 }
-
 .mainbox2 {
   font-size: 1em;
   width: 90%;
@@ -91,7 +88,6 @@ blockquote {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-
 .mainbox3 {
   width: 100%;
   background-color: #dfdfdf;
@@ -99,14 +95,12 @@ blockquote {
   margin-bottom: 30px;
   border-right: 8px solid #ffce00;
 }
-
 .mainbox2negativ {
   font-size: 1em;
   color: #f9f9f9;
   background-color: #000000;
   padding-right: 20px;
 }
-
 .farsiparagraph {
   font-size: 1em;
   width: 47%;
@@ -134,7 +128,6 @@ blockquote {
   min-width: 0px;
   background-color: #f7f7f7;
 }
-
 .titelbox {
   width: 60%;
   padding-right: 25px;
@@ -146,7 +139,6 @@ blockquote {
   background-color: #d5d5d5;
   color: #4b4b4b;
 }
-
 .lefttbox {
   padding-right: 20px;
   padding-left: 4px;
@@ -154,7 +146,6 @@ blockquote {
   margin-bottom: 10px;
   min-width: 0px;
 }
-
 .alphabet {
   width: 35%;
   float: left;
@@ -163,7 +154,6 @@ blockquote {
   font-weight: 500;
   color: #999999;
 }
-
 .alphabet2 {
   width: 35%;
   float: left;

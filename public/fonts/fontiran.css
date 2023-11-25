@@ -10,7 +10,6 @@
     /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url("ttf/iransansdnbold.ttf")
       format("truetype");
 }
-
 @font-face {
   font-family: iransansdn;
   font-style: normal;
@@ -23,7 +22,6 @@
     /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url("ttf/iransansdnlight.ttf")
       format("truetype");
 }
-
 @font-face {
   font-family: iransansdn;
   font-style: normal;

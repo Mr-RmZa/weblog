@@ -1,6 +1,5 @@
 import fs from "fs";
 import sharp from "sharp";
-import multer from "multer";
 import shortId from "shortid";
 import appRoot from "app-root-path";
 import { Blog } from "../models/Blog";
@@ -30,7 +29,7 @@ export class postController {
         .limit(postPerPage);
 
       return res.render("index", {
-        pageTitle: "Weblog",
+        pageTitle: "weblog",
         message: req.flash("success_msg"),
         error: req.flash("error"),
         posts,

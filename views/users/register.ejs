@@ -60,10 +60,24 @@
             </div>
           </div>
           <div class="mb-3">
-            <div
-              class="g-recaptcha"
-              data-sitekey="6LfdtGYlAAAAADPKn0zdN-rDtx2stwAG6fUtZ7-5"
-            ></div>
+            <div class="row">
+              <div class="col">
+                <img src="/captcha" alt="captcha" class="bg-white" />
+              </div>
+              <div class="col">
+                <div class="form-floating">
+                  <input
+                    type="search"
+                    class="form-control text-dark"
+                    id="captcha"
+                    placeholder="Captcha"
+                    name="captcha"
+                    required
+                  />
+                  <label for="captcha" class="text-muted">Captcha</label>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="d-grid gap-2">
             <button type="submit" class="btn btn btn-outline-primary">

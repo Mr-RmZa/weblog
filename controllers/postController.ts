@@ -267,8 +267,7 @@ export class postController {
         _id: req.params.id,
       });
       if (post) {
-        const result = await Blog.findByIdAndRemove(req.params.id);
-        console.log(result);
+        await Blog.findByIdAndDelete(req.params.id);
         fs.unlink(
           `${appRoot}/public/uploads/thumbnails/${post.thumbnail}`,
           (err: any) => {

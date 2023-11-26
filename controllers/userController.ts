@@ -194,36 +194,42 @@ export class userController {
 
   public static async createUser(
     req: {
-      body: { fullName: any; email: any; password: any };
+      body: { fullName: any; email: any; password: any; captcha: any };
+      session: { captcha: any };
       flash: (arg0: string, arg1: string) => void;
     },
     res: any
   ) {
     try {
-      const { fullName, email, password } = req.body;
+      const { fullName, email, password, captcha } = req.body;
       const user = await User.findOne({ email });
       if (!user) {
         schemaUser
           .validate(req.body, { abortEarly: false })
           .then(() => {
-            bcrypt.hash(password, 10).then(async (hash) => {
-              await User.create({
-                fullName,
-                email,
-                password: hash,
+            if (captcha === req.session.captcha) {
+              bcrypt.hash(password, 10).then(async (hash) => {
+                await User.create({
+                  fullName,
+                  email,
+                  password: hash,
+                });
               });
-            });
 
-            //? Send Welcome Email
-            sendEmail(
-              email,
-              fullName,
-              "خوش آمدی به وبلاگ ما",
-              "خیلی خوشحالیم که به جمع ما وبلاگرهای خفن ملحق شدی"
-            );
+              //? Send Welcome Email
+              sendEmail(
+                email,
+                fullName,
+                "خوش آمدی به وبلاگ ما",
+                "خیلی خوشحالیم که به جمع ما وبلاگرهای خفن ملحق شدی"
+              );
 
-            req.flash("success_msg", "register successfully!");
-            return res.redirect("/admin/login");
+              req.flash("success_msg", "register successfully!");
+              return res.redirect("/admin/login");
+            } else {
+              req.flash("error", "the code is not correct");
+              return res.redirect("/admin/register");
+            }
           })
           .catch((err: { errors: any }) => {
             req.flash("error", err.errors);
@@ -264,10 +270,12 @@ export class userController {
   public static async handleForgetPassword(
     req: {
       body: { email: any; captcha: any };
-      session: { captcha: any };
+      session: any;
+      logout: (arg0: (err: any) => any) => void;
       flash: (arg0: string, arg1: string) => void;
     },
-    res: any
+    res: any,
+    next: (arg0: any) => any
   ) {
     try {
       const { email, captcha } = req.body;
@@ -294,11 +302,16 @@ export class userController {
                 `جهت تغییر رمز عبور فعلی رو لینک زیر کلیک کنید
           <a href="${resetLink}">لینک تغییر رمز عبور</a>`
               );
-              req.flash(
-                "success_msg",
-                "the email containing the link has been sent successfully"
-              );
-              return res.redirect("/admin/forgetPassword");
+              req.logout((err: any) => {
+                if (err) {
+                  return next(err);
+                }
+                req.flash(
+                  "success_msg",
+                  "the email containing the link has been sent successfully"
+                );
+                return res.redirect("/admin/forgetPassword");
+              });
             } else {
               req.flash("error", "user with email is not registered");
               return res.redirect("/admin/forgetPassword");

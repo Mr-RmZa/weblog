@@ -13,6 +13,7 @@ export const schemaUser = object().shape({
   confirmPassword: string()
     .required("confirm password is required")
     .oneOf([ref("password")], "password does not match"),
+  captcha: string().required("captcha is required"),
 });
 
 export const schemaForgetPass = object().shape({

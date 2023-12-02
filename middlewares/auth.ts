@@ -11,6 +11,6 @@ export class auth {
       return next();
     }
     req.flash("error", "you are not login!");
-    res.redirect("/admin/login");
+    return res.redirect("/admin/login");
   }
 }

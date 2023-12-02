@@ -5,7 +5,11 @@ export const schemaUser = object().shape({
     .required("full name is required")
     .min(5, "full name minimum 5 character")
     .max(100, "full name maximum 100 character"),
-  email: string().email("please enter email").required("email is required"),
+  email: string()
+    .email("please enter email")
+    .required("email is required")
+    .min(5, "email minimum 5 character")
+    .max(100, "email maximum 100 character"),
   password: string()
     .required("password is required")
     .min(5, "password minimum 5 character")
@@ -13,12 +17,22 @@ export const schemaUser = object().shape({
   confirmPassword: string()
     .required("confirm password is required")
     .oneOf([ref("password")], "password does not match"),
-  captcha: string().required("captcha is required"),
+  captcha: string()
+    .required("captcha is required")
+    .min(1, "captcha minimum 1 character")
+    .max(2, "captcha maximum 2 character"),
 });
 
 export const schemaForgetPass = object().shape({
-  email: string().email("please enter email").required("email is required"),
-  captcha: string().required("captcha is required"),
+  email: string()
+    .email("please enter email")
+    .required("email is required")
+    .min(5, "email minimum 5 character")
+    .max(100, "email maximum 100 character"),
+  captcha: string()
+    .required("captcha is required")
+    .min(1, "captcha minimum 1 character")
+    .max(2, "captcha maximum 2 character"),
 });
 
 export const schemaResetPass = object().shape({
@@ -38,9 +52,14 @@ export const schemaContact = object().shape({
     .max(100, "full name maximum 100 character"),
   email: string()
     .email("the email address is not correct")
-    .required("email is required"),
+    .required("email is required")
+    .min(5, "email minimum 5 character")
+    .max(100, "email maximum 100 character"),
   message: string()
     .required("massage is required")
     .min(5, "message minimum 5 character"),
-  captcha: string().required("captcha is required"),
+  captcha: string()
+    .required("captcha is required")
+    .min(1, "captcha minimum 1 character")
+    .max(2, "captcha maximum 2 character"),
 });

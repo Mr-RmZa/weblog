@@ -472,6 +472,6 @@ export class userController {
     const captcha = svgCaptcha.createMathExpr({ mathMin: 1 });
     req.session.captcha = captcha.text;
     res.type("svg");
-    res.status(200).send(captcha.data);
+    return res.status(200).send(captcha.data);
   }
 }

@@ -1,9 +1,10 @@
 <article>
   <div class="container">
-    <div class="row">
+    <% if(posts.length > 0) { %>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <% for(let post of posts) { %>
       <div class="col">
-        <% if(posts.length > 0) { for(let post of posts) { %>
-        <div class="card text-dark mt-4 mb-4 text-center" style="width: 18rem">
+        <div class="card text-dark mt-4 mb-4 text-center h-100">
           <img
             class="card-img-top"
             src="http://<%= url %>:3000/uploads/thumbnails/<%= post.thumbnail %>"
@@ -24,12 +25,17 @@
             Posted in Date : <%=formatDate(post.createdAt) %>
           </div>
         </div>
-        <% } %> <%- include("../includes/pagination.ejs") %> <% } else {%>
+      </div>
+      <% } %> <%- include("../includes/pagination.ejs") %>
+    </div>
+    <% } else {%>
+    <div class="row">
+      <div class="col">
         <div class="m-5 text-center">
           <h1>there is nothing</h1>
         </div>
-        <% } %>
       </div>
     </div>
+    <% } %>
   </div>
 </article>

@@ -168,16 +168,16 @@ export class userController {
 
   public static logout(
     req: {
-      logout: (arg0: (err: any) => any) => void;
+      logout: (arg0: (error: any) => any) => void;
       flash: (arg0: string, arg1: string) => void;
     },
     res: any,
     next: (arg0: any) => any
   ) {
     try {
-      req.logout((err: any) => {
-        if (err) {
-          return next(err);
+      req.logout((error: any) => {
+        if (error) {
+          return next(error);
         }
         res.set(
           "Cache-Control",
@@ -231,8 +231,8 @@ export class userController {
               return res.redirect("/admin/register");
             }
           })
-          .catch((err: { errors: any }) => {
-            req.flash("error", err.errors);
+          .catch((error) => {
+            req.flash("error", error.errors);
             return res.redirect("/admin/register");
           });
       } else {
@@ -271,17 +271,17 @@ export class userController {
     req: {
       body: { email: any; captcha: any };
       session: any;
-      logout: (arg0: (err: any) => any) => void;
+      logout: (arg0: (error: any) => any) => void;
       flash: (arg0: string, arg1: string) => void;
     },
     res: any,
     next: (arg0: any) => any
   ) {
     try {
-      const { email, captcha } = req.body;
       schemaForgetPass
         .validate(req.body, { abortEarly: false })
         .then(async () => {
+          const { email, captcha } = req.body;
           if (captcha === req.session.captcha) {
             const user = await User.findOne({ email: email });
             if (user) {
@@ -300,11 +300,11 @@ export class userController {
                 user.fullName!,
                 "فراموشی رمز عبور",
                 `جهت تغییر رمز عبور فعلی رو لینک زیر کلیک کنید
-          <a href="${resetLink}">لینک تغییر رمز عبور</a>`
+                <a href="${resetLink}">لینک تغییر رمز عبور</a>`
               );
-              req.logout((err: any) => {
-                if (err) {
-                  return next(err);
+              req.logout((error) => {
+                if (error) {
+                  return next(error);
                 }
                 req.flash(
                   "success_msg",
@@ -321,8 +321,8 @@ export class userController {
             return res.redirect("/admin/forgetPassword");
           }
         })
-        .catch((err: { errors: any }) => {
-          req.flash("error", err.errors);
+        .catch((error) => {
+          req.flash("error", error.errors);
           return res.redirect("/admin/forgetPassword");
         });
     } catch (error) {
@@ -349,8 +349,8 @@ export class userController {
       try {
         decodedToken = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
         console.log(decodedToken);
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        console.log(error);
         if (!decodedToken) {
           return res.redirect("/error/404");
         }
@@ -382,10 +382,10 @@ export class userController {
     }
   ) {
     try {
-      const { password } = req.body;
       schemaResetPass
         .validate(req.body, { abortEarly: false })
         .then(() => {
+          const { password } = req.body;
           bcrypt.hash(password, 10).then(async (hash) => {
             const user = await User.findOne({ _id: req.params.id });
             if (user) {
@@ -401,8 +401,8 @@ export class userController {
             }
           });
         })
-        .catch((err: { errors: any }) => {
-          req.flash("error", err.errors);
+        .catch((error) => {
+          req.flash("error", error.errors);
           return res.render("users/resetPass", {
             pageTitle: "Change Password",
             message: req.flash("success_msg"),
@@ -440,10 +440,10 @@ export class userController {
 
   public static handleContact(req: any, res: any) {
     try {
-      const { fullName, email, message, captcha } = req.body;
       schemaContact
         .validate(req.body, { abortEarly: false })
         .then(() => {
+          const { fullName, email, message, captcha } = req.body;
           if (captcha === req.session.captcha) {
             sendEmail(
               email,
@@ -458,8 +458,8 @@ export class userController {
             return res.redirect("/contact");
           }
         })
-        .catch((err: { errors: any }) => {
-          req.flash("error", err.errors);
+        .catch((error) => {
+          req.flash("error", error.errors);
           return res.redirect("/contact");
         });
     } catch (error) {
